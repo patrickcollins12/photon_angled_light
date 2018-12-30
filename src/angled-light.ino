@@ -86,31 +86,20 @@ int r_value = 255;
 int g_value = 255;
 int b_value = 255;
 int w_value = 255;
+int brightness = 255;
 
 String mode = "natural";
 
-// SYNTAX
-bool success_r = Particle.function("r_value", set_r);
-bool success_g = Particle.function("g_value", set_g);
-bool success_b = Particle.function("b_value", set_b);
-bool success_w = Particle.function("w_value", set_w);
 bool success_c = Particle.function("rgb_value", set_rgb);
-
+bool success_w = Particle.function("w_value", set_w);
 bool success_m = Particle.function("mode", set_mode);
+bool success_b = Particle.function("brightness", set_brightness);
 
 // Cloud functions must return int and take one String
-int set_r(String r) {
-  r_value = r.toInt();
-  return 0;
-}
 
-int set_g(String g) {
-  g_value = g.toInt();
-  return 0;
-}
-
-int set_b(String b) {
-  b_value = b.toInt();
+int set_rgb(String rgb) {
+  sscanf(rgb, "#%02x%02x%02x", &r_value, &g_value, &b_value);
+  //Particle.publish("rgb_value",rgb);
   return 0;
 }
 
@@ -119,38 +108,54 @@ int set_w(String w) {
   return 0;
 }
 
-int set_rgb(String rgb) {
-  sscanf(rgb, "#%02x%02x%02x", &r_value, &g_value, &b_value);
-  Particle.publish("rgb_value",rgb);
-//   Particle.publish("r_value",sprintf("%d",r_value));
-//   Particle.publish("g_value",sprintf("%d",g_value));
-//   Particle.publish("b_value",sprintf("%d",b_value));
-
-  //w_value = w.toInt();
-  return 0;
-}
-
 int set_mode(String p) {
    mode = p;
    return 0;
 }
 
+int set_brightness(String b) {
+   brightness = b.toInt();
+   return 0;
+}
+
+// SETUP
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
 // and minimize distance between Arduino and first pixel.  Avoid connecting
 // on a live circuit...if you must, connect GND first.
-
 void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
-  //strip.setBrightness(80);
+
+  Particle.variable("mode", mode);
+  Particle.variable("brightness", brightness);
+
   Particle.variable("r_value", r_value);
   Particle.variable("g_value", g_value);
   Particle.variable("b_value", b_value);
   Particle.variable("w_value", w_value);
 }
 
+// MAIN LOOP
 void loop() {
+
+  if (mode == "off") {
+      off(100);
+  }
+  
+  if (mode == "party") {
+     rainbowCycle(30);
+  }
+  
+  else if (mode == "color" ) {
+     colorAll(strip.Color(g_value,r_value,b_value,w_value), 100);
+  }
+  
+  else if (mode == "natural") {
+     colorAll(strip.Color(0,0,0,150), 100); 
+  }
+}
+
   // Some example procedures showing how to display to the pixels:
   // Do not run more than 15 seconds of these, or the b/g tasks
   // will be blocked.
@@ -175,24 +180,13 @@ void loop() {
   //colorAll(strip.Color(100,100,50,100), 1000); // Cyan << PRODUCTION
   //colorAll(strip.Color(255,25,255,255), 10); // ALL ON FULL
 
-  
-  if (mode == "party") {
-     rainbowCycle(3); // STAGING/TEST    
-  }
-  
-  else if (mode == "color" ) {
-     colorAll(strip.Color(g_value,r_value,b_value,w_value), 100); // ALL ON FULL
-  }
-  
-  else if (mode == "natural") {
-     colorAll(strip.Color(0,0,0,150), 100); 
-  }
-
+void off(uint8_t wait ) {
+  strip.setBrightness(0);
+  strip.show();
+  delay(wait);
 }
 
-
 void whiteOverRainbow(uint8_t wait, uint8_t whiteSpeed, uint8_t whiteLength ) {
-
 
   if(whiteLength >= strip.numPixels()) whiteLength = strip.numPixels() - 1;
 
@@ -227,6 +221,7 @@ void whiteOverRainbow(uint8_t wait, uint8_t whiteSpeed, uint8_t whiteLength ) {
 
       head %= strip.numPixels();
       tail %= strip.numPixels();
+      strip.setBrightness(brightness);
       strip.show();
       delay(wait);
     }
@@ -241,6 +236,7 @@ void colorAll(uint32_t c, uint8_t wait) {
   for(i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
   }
+  strip.setBrightness(brightness);
   strip.show();
   delay(wait);
 }
@@ -249,6 +245,7 @@ void colorAll(uint32_t c, uint8_t wait) {
 void colorWipe(uint32_t c, uint8_t wait) {
   for(uint16_t i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
+    strip.setBrightness(brightness);
     strip.show();
     delay(wait);
   }
@@ -261,6 +258,7 @@ void rainbow(uint8_t wait) {
     for(i=0; i<strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel((i+j) & 255));
     }
+    strip.setBrightness(brightness);
     strip.show();
     delay(wait);
   }
@@ -274,6 +272,7 @@ void rainbowCycle(uint8_t wait) {
     for(i=0; i< strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
     }
+    strip.setBrightness(brightness);
     strip.show();
     delay(wait);
   }

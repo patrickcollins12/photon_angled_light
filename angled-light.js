@@ -49,6 +49,10 @@ function setup() {
   var whiteSlider = document.querySelector("#white");
   whiteSlider.addEventListener("change", updateWhite, false);
 
+    // setup the brightness slider
+    var brightnessSlider = document.querySelector("#brightness");
+    brightnessSlider.addEventListener("change", updateBrightness, false);
+  
   // TODO: test out defaults and disabled or slow wifi
 }
 
@@ -69,6 +73,10 @@ function hexToRgb(hex) {
 
 function updateWhite(event) {
   callParticleFunction("w_value", event.target.value);
+}
+
+function updateBrightness(event) {
+  callParticleFunction("brightness", event.target.value);
 }
 
 function handleModeChange(m) {
