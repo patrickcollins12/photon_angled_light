@@ -86,6 +86,7 @@ int r_value = 255;
 int g_value = 255;
 int b_value = 255;
 int w_value = 255;
+uint32_t rgbw_value;
 int brightness = 255;
 
 String mode = "natural";
@@ -100,11 +101,13 @@ bool success_b = Particle.function("brightness", set_brightness);
 int set_rgb(String rgb) {
   sscanf(rgb, "#%02x%02x%02x", &r_value, &g_value, &b_value);
   //Particle.publish("rgb_value",rgb);
+  calc_rgbw();
   return 0;
 }
 
 int set_w(String w) {
   w_value = w.toInt();
+  calc_rgbw();
   return 0;
 }
 
@@ -116,6 +119,13 @@ int set_mode(String p) {
 int set_brightness(String b) {
    brightness = b.toInt();
    return 0;
+}
+
+void calc_rgbw() {
+  rgbw_value = r_value;
+  rgbw_value = (rgbw_value << 8) + g_value;
+  rgbw_value = (rgbw_value << 8) + b_value;
+  rgbw_value = (rgbw_value << 8) + w_value;
 }
 
 // SETUP
@@ -130,10 +140,11 @@ void setup() {
   Particle.variable("mode", mode);
   Particle.variable("brightness", brightness);
 
-  Particle.variable("r_value", r_value);
-  Particle.variable("g_value", g_value);
-  Particle.variable("b_value", b_value);
   Particle.variable("w_value", w_value);
+
+  calc_rgbw();
+  Particle.variable("rgbw_value", rgbw_value);
+
 }
 
 // MAIN LOOP
@@ -144,7 +155,7 @@ void loop() {
   }
   
   if (mode == "party") {
-     rainbowCycle(30);
+     rainbowCycle(3);
   }
   
   else if (mode == "color" ) {
@@ -154,6 +165,8 @@ void loop() {
   else if (mode == "natural") {
      colorAll(strip.Color(0,0,0,150), 100); 
   }
+
+
 }
 
   // Some example procedures showing how to display to the pixels:

@@ -4,6 +4,7 @@
 <title>Patrick's light</title>
 <link rel="stylesheet" type="text/css" href="angled-light.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="node_modules/color-util/dist/color-util.min.js"></script>
 <script src="angled-light.js"></script>
 </head>
 
@@ -12,10 +13,10 @@
 
 	<span id="mode_title">Choose a light mode</span>
 	<form>
-	<input type="radio" name="mode" onclick="handleModeChange(this);" value="natural" checked>Natural
-	<input type="radio" name="mode" onclick="handleModeChange(this);" value="party">Party
-	<input type="radio" name="mode" onclick="handleModeChange(this);" value="color">Color
-	<input type="radio" name="mode" onclick="handleModeChange(this);" value="off">Off
+	<input type="radio" name="mode" value="natural" checked>Natural
+	<input type="radio" name="mode" value="party">Party
+	<input type="radio" name="mode" value="color">Color
+	<input type="radio" name="mode" value="off">Off
 	</form>
 
 	<br>

@@ -1,0 +1,25 @@
+{
+  "name": "photon_angled_light",
+  "version": "1.0.0",
+  "description": "angled light project",
+  "main": "angled-light.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patrickcollins12/photon_angled_light.git"
+  },
+  "keywords": [
+    "none"
+  ],
+  "author": "patrick",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/patrickcollins12/photon_angled_light/issues"
+  },
+  "homepage": "https://github.com/patrickcollins12/photon_angled_light#readme",
+  "dependencies": {
+    "color-util": "^2.2.1"
+  }
+}
