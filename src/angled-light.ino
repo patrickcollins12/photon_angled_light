@@ -87,7 +87,7 @@ int g_value = 255;
 int b_value = 255;
 int w_value = 255;
 uint32_t rgbw_value;
-int brightness = 255;
+int brightness = 80;
 
 String mode = "natural";
 
@@ -145,10 +145,19 @@ void setup() {
   calc_rgbw();
   Particle.variable("rgbw_value", rgbw_value);
 
+  // set the timezone, not it is not DST sensitive.
+  Time.zone(-8);
+
 }
 
 // MAIN LOOP
 void loop() {
+
+  // Lights off between 4am and 5pm
+  if (  Time.hour() > 4 && Time.hour() < 17  ) {
+    off(1000);
+    return;
+  }
 
   if (mode == "off") {
       off(100);
@@ -165,7 +174,6 @@ void loop() {
   else if (mode == "natural") {
      colorAll(strip.Color(0,0,0,150), 100); 
   }
-
 
 }
 
