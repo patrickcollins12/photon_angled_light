@@ -21,9 +21,6 @@ function testHandler(result) {
 }
 
 function setup() {
-  // TODO: Alexa
-  // TODO: More fun modes
-  // TODO: test out defaults and disabled or slow wifi
 
   // when first loading try to get the mode from the photon
   readParticleVariable("mode",modeVariableResultHandler);
@@ -45,11 +42,29 @@ function setup() {
   // setup the brightness slider in the DOM
   var brightnessSlider = document.querySelector("#brightness");
   brightnessSlider.addEventListener("change", updateBrightness, false);
+
+  // setup the party speed slider in the DOM
+  // var psSlider = document.querySelector("#party_speed");
+  // psSlider.addEventListener("change", updatePartySpeed, false);
+
+  // party speed
+  var psSlider = document.querySelector("#party_speed");
+  psSlider.addEventListener("change", function(event) {
+    callParticleFunction("party_speed", event.target.value);
+
+  }, false);
   
+  // color speed
+  var csSlider = document.querySelector("#color_speed");
+  csSlider.addEventListener("change", function(event) {
+    callParticleFunction("color_speed", event.target.value);
+
+  }, false);
+  
+
   // setup the mode radio handler in the DOM
   var radios = document.getElementsByName("mode");
   for (var i = 0; i < radios.length; i++) {
-    console.log(i)
     radios[i].addEventListener("change", handleModeClick, false);
   }
 
@@ -94,6 +109,11 @@ function updateWhite(event) {
   callParticleFunction("w_value", event.target.value);
 }
 
+function updatePartySpeed(event) {
+  callParticleFunction("party_speed", event.target.value);
+}
+
+
 // HANDLE BRIGHTNESS LOADING AND CLICK EVENTS 
 function brightnessVariableResultsHandler(value) {
   document.querySelector("#brightness").value = value;
@@ -105,34 +125,53 @@ function updateBrightness(event) {
 
 // HANDLE MODE LOADING AND CLICK EVENTS 
 function modeVariableResultHandler(mode) {
-  console.log("mode:",mode);
+  console.log("Retrieved mode:",mode);
   var radios = document.getElementsByName("mode");
   for (var i = 0; i < radios.length; i++) {
     r = radios[i];
     r.checked = (r.value == mode)?true:false;
   }
 
-  displayColorSection(mode);
+  displaySubSection(mode);
 }
 
 function handleModeClick(event) {
-  console.log("here")
   var mode = event.target.value
-  console.log("Mode:", mode);
+  console.log("Setting mode to:", mode);
   callParticleFunction("mode", mode);
-  displayColorSection(mode);
+  displaySubSection(mode);
 }
 
-// hide or display the color section
-function displayColorSection(mode) {
-    // show or hide the color section
+// hide or display the mode section
+// and preload and variables set into the photon
+function displaySubSection(mode) {
 
-    var c = document.querySelector("#color_section");
-    if (mode == "color") {
+    if (mode=="color") {
       readParticleVariable("rgbw_value",rgbwVariableResultHandler);
-      c.style.display = "inline"
-    } else {
-      c.style.display = "none"
+    }
+
+    if (mode=="party") {
+      readParticleVariable("party_speed",function(speed) {
+        document.querySelector("#party_speed").value = speed;
+      });
+    }
+
+    if (mode=="colorcycle") {
+      readParticleVariable("color_speed",function(speed) {
+        document.querySelector("#color_speed").value = speed;
+      });
+    }
+
+    // show or hide the mode section
+    const sections = document.querySelectorAll(".mode_section");
+    for (var i = 0; i < sections.length; i++) {
+      var section = sections[i];
+      if (section.id == mode + "_section" ) {
+        section.style.display = "inline"
+      } else {
+        section.style.display = "none"
+      }
+
     }
 }
 

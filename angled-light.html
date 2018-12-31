@@ -11,21 +11,23 @@
 <body onload="setup();">
 	<h2>Patrick's Angled Light</h2>
 
-	<span id="mode_title">Choose a light mode</span>
-	<form>
-	<input type="radio" name="mode" value="natural" checked>Natural
-	<input type="radio" name="mode" value="party">Party
-	<input type="radio" name="mode" value="color">Color
-	<input type="radio" name="mode" value="off">Off
-	</form>
-
-	<br>
 	<label for="brightness">Brightness</label>
 	<input type="range" id="brightness" name="brightness" min="1" max="255" value="255">
-	<br>
 	
-	<div id="color_section">
-		<p></p>
+	<p></p>
+
+	<span id="mode_title">Choose a light mode</span>
+	<form>
+	<input type="radio" name="mode" value="natural" checked>Natural<br>
+	<input type="radio" name="mode" value="party">Party (Motion)<br>
+	<input type="radio" name="mode" value="colorcycle">Color (Motion)<br>
+	<input type="radio" name="mode" value="color">Color (Choose)<br>
+	<input type="radio" name="mode" value="off">Off<br>
+	</form>
+
+	<p></p>
+	
+	<div id="color_section" class="mode_section">
 
 		<label for="colorWell">Color</label>
 		<input id="colorWell" type="color" value="#ff0000">	
@@ -37,5 +39,14 @@
 		<input type="range" id="white" name="white" min="0" max="255" value="0">
 	</div>
 
+	<div id="party_section" class="mode_section">
+		<label for="speed">Party Speed</label><br>
+		Fast (1ms) <input type="range" id="party_speed" name="party_speed" min="1" max="20" value="0"> Slow (20ms)
+	</div>
+
+	<div id="colorcycle_section" class="mode_section">
+		<label for="color_speed">Color Cycle Speed</label><br>
+		Fast (1ms) <input type="range" id="color_speed" name="color_speed" min="1" max="300" value="0"> Slow (300ms)
+	</div>
 </body>
 </html>

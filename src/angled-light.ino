@@ -1,39 +1,3 @@
-/*-------------------------------------------------------------------------
-  Spark Core, Particle Photon, P1, Electron and RedBear Duo library to control
-  WS2811/WS2812/WS2813 based RGB LED devices such as Adafruit NeoPixel strips.
-
-  Supports:
-  - 800 KHz WS2812, WS2812B, WS2813 and 400kHz bitstream and WS2811
-  - 800 KHz bitstream SK6812RGBW (NeoPixel RGBW pixel strips)
-    (use 'SK6812RGBW' as PIXEL_TYPE)
-
-  Also supports:
-  - Radio Shack Tri-Color Strip with TM1803 controller 400kHz bitstream.
-  - TM1829 pixels
-
-  PLEASE NOTE that the NeoPixels require 5V level inputs
-  and the Spark Core, Particle Photon, P1, Electron and RedBear Duo only
-  have 3.3V level outputs. Level shifting is necessary, but will require
-  a fast device such as one of the following:
-
-  [SN74HCT125N]
-  http://www.digikey.com/product-detail/en/SN74HCT125N/296-8386-5-ND/376860
-
-  [SN74HCT245N]
-  ,
-  http://www.digikey.com/product-detail/en/SN74HCT245N/296-1612-5-ND/277258
-
-  Written by Phil Burgess / Paint Your Dragon for Adafruit Industries.
-  Modified to work with Particle devices by Technobly.
-  Contributions by PJRC and other members of the open source community.
-
-  Adafruit invests time and resources providing this open source code,
-  please support Adafruit and open-source hardware by purchasing products
-  from Adafruit!
-  --------------------------------------------------------------------*/
-
-/* ======================= includes ================================= */
-
 #include "Particle.h"
 #include "neopixel.h"
 
@@ -88,6 +52,9 @@ int b_value = 255;
 int w_value = 255;
 uint32_t rgbw_value;
 int brightness = 80;
+int party_speed = 3;
+int colorcycle_speed = 3;
+
 
 String mode = "natural";
 
@@ -95,6 +62,8 @@ bool success_c = Particle.function("rgb_value", set_rgb);
 bool success_w = Particle.function("w_value", set_w);
 bool success_m = Particle.function("mode", set_mode);
 bool success_b = Particle.function("brightness", set_brightness);
+bool success_ps= Particle.function("party_speed", set_party_speed);
+bool success_cs= Particle.function("color_speed", set_colorcycle_speed);
 
 // Cloud functions must return int and take one String
 
@@ -121,6 +90,16 @@ int set_brightness(String b) {
    return 0;
 }
 
+int set_party_speed(String s) {
+   party_speed = s.toInt();
+   return 0;
+}
+
+int set_colorcycle_speed(String s) {
+   colorcycle_speed = s.toInt();
+   return 0;
+}
+
 void calc_rgbw() {
   rgbw_value = r_value;
   rgbw_value = (rgbw_value << 8) + g_value;
@@ -136,14 +115,15 @@ void calc_rgbw() {
 void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
+  calc_rgbw();
 
+  // Allow reading from the photon the existing settings
   Particle.variable("mode", mode);
   Particle.variable("brightness", brightness);
-
+  Particle.variable("party_speed", party_speed);
+  Particle.variable("color_speed", colorcycle_speed);
   Particle.variable("w_value", w_value);
-
-  calc_rgbw();
-  Particle.variable("rgbw_value", rgbw_value);
+  Particle.variable("rgbw_value", rgbw_value); // be sure to call calc_rgbw first
 
   // set the timezone, not it is not DST sensitive.
   Time.zone(-8);
@@ -154,19 +134,23 @@ void setup() {
 void loop() {
 
   // Lights off between 4am and 5pm
-  if (  Time.hour() > 4 && Time.hour() < 17  ) {
-    off(1000);
-    return;
-  }
+  // if (  Time.hour() > 4 && Time.hour() < 17  ) {
+  //   off(1000);
+  //   return;
+  // }
 
   if (mode == "off") {
       off(100);
   }
   
   if (mode == "party") {
-     rainbowCycle(3);
+     rainbowCycle(party_speed);
   }
-  
+
+  if (mode == "colorcycle") {
+     rainbow(colorcycle_speed);
+  }
+
   else if (mode == "color" ) {
      colorAll(strip.Color(g_value,r_value,b_value,w_value), 100);
   }
