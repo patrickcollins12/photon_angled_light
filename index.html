@@ -2,13 +2,10 @@
 <html>
 <head>
 <title>Patrick's light</title>
-<link rel="stylesheet" type="text/css" href="angled-light.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="node_modules/color-util/dist/color-util.min.js"></script>
-<script src="angled-light.js"></script>
+<link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 
-<body onload="setup();">
+<body>
 	<h2>Patrick's Angled Light</h2>
 
 	<label for="brightness">Brightness</label>
@@ -48,5 +45,9 @@
 		<label for="color_speed">Color Cycle Speed</label><br>
 		Fast (1ms) <input type="range" id="color_speed" name="color_speed" min="1" max="300" value="0"> Slow (300ms)
 	</div>
+
+	<script src="dist/main.js"></script>
+
 </body>
+
 </html>

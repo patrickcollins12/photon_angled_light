@@ -1,33 +1,18 @@
 
-
-function readParticleVariable(variableName, resultFunction) {
-  var deviceID = "38003b001347363336383437";
-  var accessToken = "82a528ad4ec2c1d91f74d4155e4ce1e8e41cebd2";
-
-  requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/" + variableName
-  var formData = {
-    'access_token': accessToken,
-  }
-
-  $.getJSON(requestURL, formData, function (json) {
-    console.log(json)
-    resultFunction(json.result);
-  });
-}
-
-
-function testHandler(result) {
-  console.log("Value: ", result)
-}
+const deviceID = "38003b001347363336383437";
+const accessToken = "82a528ad4ec2c1d91f74d4155e4ce1e8e41cebd2";
+var requestURL = `https://api.spark.io/v1/devices/${deviceID}`;
+import axios from 'axios';
 
 function setup() {
 
   // when first loading try to get the mode from the photon
-  readParticleVariable("mode",modeVariableResultHandler);
+  readParticleVariable("mode", modeVariableResultHandler);
 
   // when first loading try to get the brightness from the photon
-  readParticleVariable("brightness",brightnessVariableResultsHandler);
-
+  readParticleVariable("brightness",  function(value) {
+    document.querySelector("#brightness").value = value;
+  });  
 
   // setup the color picker in the DOM
   var colorWell = document.querySelector("#colorWell");
@@ -61,7 +46,6 @@ function setup() {
 
   }, false);
   
-
   // setup the mode radio handler in the DOM
   var radios = document.getElementsByName("mode");
   for (var i = 0; i < radios.length; i++) {
@@ -70,28 +54,103 @@ function setup() {
 
 }
 
-function callParticleFunction(functionName, argValue) {
-  var deviceID = "38003b001347363336383437";
-  var accessToken = "82a528ad4ec2c1d91f74d4155e4ce1e8e41cebd2";
+export default setup
 
-  requestURL = "https://api.spark.io/v1/devices/" + deviceID + "/" + functionName
-  var formData = {
-    'access_token': accessToken,
-    'arg': argValue
-  }
+// We're getting a variable (GETting) and inspecting the response
+//  for the result param and posting to the resultFunction
+function readParticleVariable(functionName, resultFunction) {
+  axios(
+    { url:    `${requestURL}/${functionName}`,
+      params: { access_token: accessToken },
+      method: 'GET',
+      timeout: 9000
+    })
+  .then(function (response) {
+    var result = response.data.result;
+    console.log(`get ${functionName}:${result} (succeeded)` );
+    resultFunction(result);
+  })
 
-  $.post(requestURL, formData, function (json) {
-    console.log(json)
-  });
 }
 
-// var colorWell;
-// var whiteSlider;
+// We're setting a variable (POSTING a function) 
+// and ignoring the response
+function callParticleFunction(functionName, arg) {
+  axios(
+    { url:    `${requestURL}/${functionName}`,
+      params: { access_token: accessToken },
+      method: 'POST',
+      data:   { arg: arg },
+      timeout: 9000
+    })
+  .then(function (response) {
+    console.log(`set ${functionName}:${arg} (succeeded)`);
+  })
+
+}
+
+function callParticleAxios(functionName, argName, resultFunction) {
+  // We're setting a variable (POSTING a function) 
+  // and ignoring the response
+    axios(
+      {
+        url:    `${requestURL}/${functionName}`,
+        method: 'POST',
+        data:   { arg: argName },
+        params: { access_token: accessToken }
+      })
+    .then(function (response) {
+      console.log(`set ${argName} (succeeded)`);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+function callParticleFETCH(functionName, argName, resultFunction) {
+
+  var requestURL = "https://api.spark.io/v1/devices/"
+  requestURL += deviceID + "/" + functionName; 
+  requestURL += "?access_token=" + accessToken;
+
+  console.log("Calling particle: ", requestURL);
+  var resp = fetch(requestURL, {
+      mode: "cors",
+      method: (argName) ? "POST" : "GET",
+      body: (argName) ? JSON.stringify({
+        arg: argName
+      }) : null,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        if (resultFunction) {
+          response.text().then(function (text) {
+            var result = JSON.parse(text).result
+            console.log(functionName + ":", result)
+            resultFunction(result);
+          })
+
+          // resultFunction(response.text().result);
+        } else {
+          console.log(response);
+        }
+
+      }
+      // else {
+      //   throw new Error(response.status + response.statusText);
+      // }
+    })
+  // .catch( error => { return; console.error('Error:', error) }
+  // );
+}
 
 var defaultColor = "#000000";
 
 function updateColor(event) {
-  colorValue = event.target.value;
+  var colorValue = event.target.value;
   document.querySelector("#colorText").textContent = colorValue + " " + JSON.stringify(hexToRgb(colorValue));
   callParticleFunction("rgb_value", event.target.value);
 }
@@ -125,10 +184,9 @@ function updateBrightness(event) {
 
 // HANDLE MODE LOADING AND CLICK EVENTS 
 function modeVariableResultHandler(mode) {
-  console.log("Retrieved mode:",mode);
   var radios = document.getElementsByName("mode");
   for (var i = 0; i < radios.length; i++) {
-    r = radios[i];
+    var r = radios[i];
     r.checked = (r.value == mode)?true:false;
   }
 
@@ -137,7 +195,6 @@ function modeVariableResultHandler(mode) {
 
 function handleModeClick(event) {
   var mode = event.target.value
-  console.log("Setting mode to:", mode);
   callParticleFunction("mode", mode);
   displaySubSection(mode);
 }
@@ -145,10 +202,6 @@ function handleModeClick(event) {
 // hide or display the mode section
 // and preload and variables set into the photon
 function displaySubSection(mode) {
-
-    if (mode=="color") {
-      readParticleVariable("rgbw_value",rgbwVariableResultHandler);
-    }
 
     if (mode=="party") {
       readParticleVariable("party_speed",function(speed) {
@@ -162,15 +215,16 @@ function displaySubSection(mode) {
       });
     }
 
-    // show or hide the mode section
+    if (mode=="color") {
+      readParticleVariable("rgbw_value",rgbwVariableResultHandler);
+    }
+
+    // hide all the mode sections and show the 
+    // right one for the mode
     const sections = document.querySelectorAll(".mode_section");
     for (var i = 0; i < sections.length; i++) {
-      var section = sections[i];
-      if (section.id == mode + "_section" ) {
-        section.style.display = "inline"
-      } else {
-        section.style.display = "none"
-      }
+      var s = sections[i];
+      s.style.display = (s.id == mode + "_section" ) ? "inline" : "none";
 
     }
 }
