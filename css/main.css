@@ -1,3 +1,28 @@
 .mode_section {
     display: none;
 }
+
+.pcb {
+    border-style: solid;
+    border-color: gray;
+    border-width: 1px;
+    vertical-align: top;
+}
+
+.header {
+    color: #ee6e73;
+    font-weight: 300;
+}
+
+.section_header {
+    margin-top: 0px;
+}
+
+h3,h4,h5 {
+    font-size: 1.64rem;
+    line-height: 110%;
+}
+
+.pcrange {
+    max-width: 300px;
+}

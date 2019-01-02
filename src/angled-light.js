@@ -14,6 +14,11 @@ function setup() {
     document.querySelector("#brightness").value = value;
   });  
 
+  // when first loading try to get the schedule value from the photon
+  readParticleVariable("schedule",  function(value) {
+    document.querySelector("#schedule").checked = (value=="on")?true:false;
+  });  
+  
   // setup the color picker in the DOM
   var colorWell = document.querySelector("#colorWell");
   colorWell.value = defaultColor;
@@ -45,13 +50,20 @@ function setup() {
     callParticleFunction("color_speed", event.target.value);
 
   }, false);
-  
+
+  // setup schedule event listener
+  var scheduleCheckbox = document.querySelector("#schedule");
+  scheduleCheckbox.addEventListener("change", function(event) {
+    callParticleFunction("schedule", (event.target.checked)?"on":"off");
+  }, false);
+
   // setup the mode radio handler in the DOM
   var radios = document.getElementsByName("mode");
   for (var i = 0; i < radios.length; i++) {
     radios[i].addEventListener("change", handleModeClick, false);
   }
 
+  
 }
 
 export default setup

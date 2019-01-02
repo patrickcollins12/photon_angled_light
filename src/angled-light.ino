@@ -55,15 +55,16 @@ int brightness = 255;
 int party_speed = 3;
 int colorcycle_speed = 3;
 
-
+String schedule = "on"; // on|off
 String mode = "natural";
 
-bool success_c = Particle.function("rgb_value", set_rgb);
-bool success_w = Particle.function("w_value", set_w);
-bool success_m = Particle.function("mode", set_mode);
-bool success_b = Particle.function("brightness", set_brightness);
-bool success_ps= Particle.function("party_speed", set_party_speed);
-bool success_cs= Particle.function("color_speed", set_colorcycle_speed);
+bool success_c  = Particle.function("rgb_value", set_rgb);
+bool success_w  = Particle.function("w_value", set_w);
+bool success_sw = Particle.function("schedule", set_schedule);
+bool success_m  = Particle.function("mode", set_mode);
+bool success_b  = Particle.function("brightness", set_brightness);
+bool success_ps = Particle.function("party_speed", set_party_speed);
+bool success_cs = Particle.function("color_speed", set_colorcycle_speed);
 
 // Cloud functions must return int and take one String
 
@@ -78,6 +79,16 @@ int set_w(String w) {
   w_value = w.toInt();
   calc_rgbw();
   return 0;
+}
+
+int set_schedule(String p) {
+  if (p == "on" || p=="off") {
+    schedule = p;
+    return 0;
+  } else {
+    return 1;
+  }
+   
 }
 
 int set_mode(String p) {
@@ -118,6 +129,7 @@ void setup() {
   calc_rgbw();
 
   // Allow reading from the photon the existing settings
+  Particle.variable("schedule", schedule);
   Particle.variable("mode", mode);
   Particle.variable("brightness", brightness);
   Particle.variable("party_speed", party_speed);
@@ -133,14 +145,14 @@ void setup() {
 // MAIN LOOP
 void loop() {
 
-  // Lights off between 4am and 5pm
-  if (  Time.hour() > 4 && Time.hour() < 17  ) {
+  // Lights off as scheduled between 4am and 5pm
+  if (schedule == "on" && Time.hour() > 4 && Time.hour() < 17  ) {
     off(1000);
-    return;
   }
 
+  // fold this into the schedule?
   if (mode == "off") {
-      off(100);
+      off(1000);
   }
   
   if (mode == "party") {

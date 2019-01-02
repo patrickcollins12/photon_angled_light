@@ -1,49 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<title>Patrick's light</title>
-<link rel="stylesheet" type="text/css" href="css/main.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Patrick's light</title>
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+	<script src="js/materialize.js"></script>
 </head>
 
 <body>
-	<h2>Patrick's Angled Light</h2>
+	<div class="container">
 
-	<label for="brightness">Brightness</label>
-	<input type="range" id="brightness" name="brightness" min="1" max="255" value="255">
-	
-	<p></p>
+		<!-- <div class="progress">
+			<div class="indeterminate"></div>
+		</div> -->
 
-	<span id="mode_title">Choose a light mode</span>
-	<form>
-	<input type="radio" name="mode" value="natural" checked>Natural<br>
-	<input type="radio" name="mode" value="party">Party (Motion)<br>
-	<input type="radio" name="mode" value="colorcycle">Color (Motion)<br>
-	<input type="radio" name="mode" value="color">Color (Choose)<br>
-	<input type="radio" name="mode" value="off">Off<br>
-	</form>
+		<h2 class="header">Light Remote</h2>
 
-	<p></p>
-	
-	<div id="color_section" class="mode_section">
+		<!-- <div class="card-panel teal lighten-2">This is a card panel with a teal lighten-2 class</div> -->
 
-		<label for="colorWell">Color</label>
-		<input id="colorWell" type="color" value="#ff0000">	
-		<span id="colorText"></span>
+		<div class="row">
 
-		<br>
+			<div class="col s12 m6 l4  ">
+				<h5 class="header section_header">General Settings</h5>
+			</div>
 
-		<label for="white">White</label>
-		<input type="range" id="white" name="white" min="0" max="255" value="0">
-	</div>
+			<div class="col s12 m6 l8 ">
 
-	<div id="party_section" class="mode_section">
-		<label for="speed">Party Speed</label><br>
-		Fast (1ms) <input type="range" id="party_speed" name="party_speed" min="1" max="20" value="0"> Slow (20ms)
-	</div>
+				<div class="switch">
+					<label>
+						No Schedule
+						<input type="checkbox" id="schedule">
+						<span class="lever"></span>
+						Use Schedule
+					</label>
+				</div>
 
-	<div id="colorcycle_section" class="mode_section">
-		<label for="color_speed">Color Cycle Speed</label><br>
-		Fast (1ms) <input type="range" id="color_speed" name="color_speed" min="1" max="300" value="0"> Slow (300ms)
+				<p></p>
+
+				<label for="brightness">Brightness</label><br>
+				<input class="pcrange" type="range" id="brightness" name="brightness" min="1" max="255" value="255">
+
+			</div>
+
+		</div> <!-- general  row -->
+
+		<div class="row">
+
+			<div class="col s12 m6 l4  ">
+				<h5 class="header section_header">Mode</h5>
+			</div>
+
+			<div class="col s12 m6 l8 ">
+				<span id="mode_title">Choose a light mode</span>
+				<form action="#">
+					<p>
+						<label>
+							<input type="radio" name="mode" value="natural" checked />
+							<span>Natural</span>
+						</label>
+					</p>
+
+					<p>
+						<label>
+							<input type="radio" name="mode" value="party" checked />
+							<span>Party (Motion)</span>
+						</label>
+					</p>
+
+					<p>
+						<label>
+							<input type="radio" name="mode" value="colorcycle" checked />
+							<span>Color (Motion)</span>
+						</label>
+					</p>
+
+					<p>
+						<label>
+							<input type="radio" name="mode" value="color" checked />
+							<span>Color (Chooser)</span>
+						</label>
+					</p>
+
+					<p>
+						<label>
+							<input type="radio" name="mode" value="off" checked />
+							<span>Off</span>
+						</label>
+					</p>
+
+					<!-- <input type="radio" name="mode" value="natural" checked>Natural<br>
+						<input type="radio" name="mode" value="party">Party (Motion)<br>
+						<input type="radio" name="mode" value="colorcycle">Color (Motion)<br>
+						<input type="radio" name="mode" value="color">Color (Choose)<br>
+						<input type="radio" name="mode" value="off">Off<br> -->
+				</form>
+			</div>
+		</div>
+		<div class="row">
+
+			<div class="col s12 m6 l4  ">
+				<h5 class="header section_header">Settings</h5>
+			</div>
+
+			<div class="col s12 m6 l8 ">
+				<div id="natural_section" class="mode_section">
+				</div>
+		
+				<div id="color_section" class="mode_section">
+
+					<label for="colorWell">Color</label>
+					<input id="colorWell" type="color" value="#ff0000">
+					<span id="colorText"></span>
+
+					<br>
+
+					<label for="white">White</label><br>
+					<input class="pcrange" type="range" id="white" name="white" min="0" max="255" value="0">
+				</div>
+
+				<div id="party_section" class="mode_section">
+					<label for="speed">Party Speed</label><br>
+					Fast (1ms) <input class="pcrange" type="range" id="party_speed" name="party_speed" min="1" max="20" value="0"> Slow (20ms)
+				</div>
+
+				<div id="colorcycle_section" class="mode_section">
+					<label for="color_speed">Color Cycle Speed</label><br>
+					Fast (1ms) <input class="pcrange" type="range" id="color_speed" name="color_speed" min="1" max="300" value="0"> Slow (300ms)
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<script src="dist/main.js"></script>
