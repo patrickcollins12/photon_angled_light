@@ -19,30 +19,6 @@ SYSTEM_MODE(AUTOMATIC);
 #define PIXEL_PIN D2
 #define PIXEL_TYPE SK6812RGBW
 
-// Parameter 1 = number of pixels in strip
-//               note: for some stripes like those with the TM1829, you
-//                     need to count the number of segments, i.e. the
-//                     number of controllers in your stripe, not the number
-//                     of individual LEDs!
-// Parameter 2 = pin number (most are valid)
-//               note: if not specified, D2 is selected for you.
-// Parameter 3 = pixel type [ WS2812, WS2812B, WS2812B2, WS2813, WS2811,
-//                            TM1803, TM1829, SK6812RGBW, WS2812B_FAST,
-//                            WS2812B2_FAST ]
-//               note: if not specified, WS2812B is selected for you which
-//                     is the same as WS2812 or WS2813 in operation.
-//               note: RGB order is automatically applied to WS2811,
-//                     WS2812/WS2812B/WS2812B2/WS2813/TM1803 is GRB order.
-//               note: For legacy 50us reset pulse timing on WS2812/WS2812B
-//                     or WS2812B2, select WS2812B_FAST or WS2812B2_FAST
-//                     respectively.  Otherwise 300us timing will be used.
-//
-// 800 KHz bitstream 800 KHz bitstream (most NeoPixel products
-//               WS2812/WS2813 (6-pin part)/WS2812B (4-pin part)/SK6812RGBW (RGB+W) )
-//
-// 400 KHz bitstream (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
-//                   (Radio Shack Tri-Color LED Strip - TM1803 driver
-//                    NOTE: RS Tri-Color LED's are grouped in sets of 3)
 
 Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
 
@@ -176,7 +152,12 @@ void loop() {
   }
 
   if (mode == "colorcycle") {
-     rainbow(colorcycle_speed);
+    //  rainbow(colorcycle_speed);
+  }
+
+  if (mode == "colorwhite") {
+    whiteOverRainbow(3,50,1);
+
   }
 
   else if (mode == "color" ) {
@@ -205,34 +186,35 @@ void calc_rgbw() {
   rgbw_value = (rgbw_value << 8) + w_value;
 }
 
-  // Some example procedures showing how to display to the pixels:
-  // Do not run more than 15 seconds of these, or the b/g tasks
-  // will be blocked.
-  //--------------------------------------------------------------
-
-  //strip.setPixelColor(0, strip.Color(0,0,0,255));
-  //strip.show();
-
-  //colorWipe(strip.Color(255, 0, 0), 50); // Red
-
-  //colorWipe(strip.Color(0, 255, 0,50), 50); // Green
-
-  //colorWipe(strip.Color(0, 0, 255), 50); // Blue
-
-  //colorWipe(strip.Color(0, 0, 0, 30), 10); // White
-  //colorWipe(strip.Color(0, 0, 0, 0), 10); // Off
-
-  //whiteOverRainbow(5,50,10);
-  //rainbow(20);
-
-//rgb(255,250,205)
-  //colorAll(strip.Color(100,100,50,100), 1000); // Cyan << PRODUCTION
-  //colorAll(strip.Color(255,25,255,255), 10); // ALL ON FULL
 
 
 /* ------------------------------------------------------------------------*/
 /* --- NEOPIXEL FUNCTIONS                                              ----*/
 /* ------------------------------------------------------------------------*/
+// Parameter 1 = number of pixels in strip
+//               note: for some stripes like those with the TM1829, you
+//                     need to count the number of segments, i.e. the
+//                     number of controllers in your stripe, not the number
+//                     of individual LEDs!
+// Parameter 2 = pin number (most are valid)
+//               note: if not specified, D2 is selected for you.
+// Parameter 3 = pixel type [ WS2812, WS2812B, WS2812B2, WS2813, WS2811,
+//                            TM1803, TM1829, SK6812RGBW, WS2812B_FAST,
+//                            WS2812B2_FAST ]
+//               note: if not specified, WS2812B is selected for you which
+//                     is the same as WS2812 or WS2813 in operation.
+//               note: RGB order is automatically applied to WS2811,
+//                     WS2812/WS2812B/WS2812B2/WS2813/TM1803 is GRB order.
+//               note: For legacy 50us reset pulse timing on WS2812/WS2812B
+//                     or WS2812B2, select WS2812B_FAST or WS2812B2_FAST
+//                     respectively.  Otherwise 300us timing will be used.
+//
+// 800 KHz bitstream 800 KHz bitstream (most NeoPixel products
+//               WS2812/WS2813 (6-pin part)/WS2812B (4-pin part)/SK6812RGBW (RGB+W) )
+//
+// 400 KHz bitstream (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
+//                   (Radio Shack Tri-Color LED Strip - TM1803 driver
+//                    NOTE: RS Tri-Color LED's are grouped in sets of 3)
 
 void whiteOverRainbow(uint8_t wait, uint8_t whiteSpeed, uint8_t whiteLength ) {
 
