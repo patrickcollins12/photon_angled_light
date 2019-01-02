@@ -53,7 +53,8 @@ int w_value = 255;
 uint32_t rgbw_value;
 int brightness = 255;
 int party_speed = 3;
-int colorcycle_speed = 3;
+int colorcycle_speed = 250;
+int timeOutSeconds = 5;
 
 String schedule = "on"; // on|off
 String mode = "natural";
@@ -67,6 +68,16 @@ bool success_ps = Particle.function("party_speed", set_party_speed);
 bool success_cs = Particle.function("color_speed", set_colorcycle_speed);
 
 // Cloud functions must return int and take one String
+
+unsigned long timer = 0;
+void startTimer() {
+  timer = millis();
+}
+
+void endTimer() {
+  timer = 0;
+}
+
 
 int set_rgb(String rgb) {
   sscanf(rgb, "#%02x%02x%02x", &r_value, &g_value, &b_value);
@@ -93,6 +104,12 @@ int set_schedule(String p) {
 
 int set_mode(String p) {
    mode = p;
+
+   // For all modes except natural and off, start the timer off
+   if (mode == "party" ) {
+      startTimer();
+   }
+
    return 0;
 }
 
@@ -111,11 +128,10 @@ int set_colorcycle_speed(String s) {
    return 0;
 }
 
-void calc_rgbw() {
-  rgbw_value = r_value;
-  rgbw_value = (rgbw_value << 8) + g_value;
-  rgbw_value = (rgbw_value << 8) + b_value;
-  rgbw_value = (rgbw_value << 8) + w_value;
+void off(uint8_t wait ) {
+  strip.setBrightness(0);
+  strip.show();
+  delay(wait);
 }
 
 // SETUP
@@ -171,6 +187,22 @@ void loop() {
      colorAll(strip.Color(0,0,0,150), 100); 
   }
 
+  // 1000*timeOutSeconds = 3000
+  // startTimer = 123456
+  // if millis
+  unsigned long now = millis();
+  if ( timer>0 && now > timer + timeOutSeconds*1000 ) {
+    endTimer();
+    set_mode("natural");
+  }
+  
+}
+
+void calc_rgbw() {
+  rgbw_value = r_value;
+  rgbw_value = (rgbw_value << 8) + g_value;
+  rgbw_value = (rgbw_value << 8) + b_value;
+  rgbw_value = (rgbw_value << 8) + w_value;
 }
 
   // Some example procedures showing how to display to the pixels:
@@ -197,11 +229,10 @@ void loop() {
   //colorAll(strip.Color(100,100,50,100), 1000); // Cyan << PRODUCTION
   //colorAll(strip.Color(255,25,255,255), 10); // ALL ON FULL
 
-void off(uint8_t wait ) {
-  strip.setBrightness(0);
-  strip.show();
-  delay(wait);
-}
+
+/* ------------------------------------------------------------------------*/
+/* --- NEOPIXEL FUNCTIONS                                              ----*/
+/* ------------------------------------------------------------------------*/
 
 void whiteOverRainbow(uint8_t wait, uint8_t whiteSpeed, uint8_t whiteLength ) {
 
