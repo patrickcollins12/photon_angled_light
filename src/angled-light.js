@@ -43,7 +43,7 @@ function setup() {
     callParticleFunction("party_speed", event.target.value);
 
   }, false);
-  
+
   // color speed
   var csSlider = document.querySelector("#color_speed");
   csSlider.addEventListener("change", function(event) {
