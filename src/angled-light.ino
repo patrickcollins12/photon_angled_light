@@ -56,6 +56,7 @@ int party_speed = 3;
 int colorcycle_speed = 250;
 int timeOutSeconds = 5;
 
+
 String schedule = "on"; // on|off
 String mode = "natural";
 
