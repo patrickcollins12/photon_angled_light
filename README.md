@@ -2,8 +2,9 @@
 
 TODO: 
 - More fun modes: throbbing
-- debug working on iphone.
-- Publish mode changes to UI? Would this need React?
+- BUG: debug working on iphone.
+- Publish mode changes to UI? Would this need React? Meh couldn't be bothered.
+- BUG: colorcycle seems to lock the device. maybe it is because the sleep cycle is too long?
 
 DONE:
 - Alexa
@@ -15,3 +16,4 @@ DONE:
 - Set timeout on party mode
 - github push from vscode
 - More fun modes: white light dropping
+
