@@ -1,19 +1,23 @@
 # photon angled light
 
 ## COMMANDS
-``` npm install
-# production
-npm run build 
 
-# dev watch
-npm run dev
 
-# flash to the device
-npm run flash 
+### npm install
+`npm install`
 
-# run the local webserver
-npm start 
-```
+### production build
+`npm run build`
+
+### dev watch
+`npm run dev`
+
+### flash to the device
+`npm run flash`
+
+### run the local webserver
+`npm start`
+
 
 ## TODO
 - More fun modes: throbbing
