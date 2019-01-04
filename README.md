@@ -4,18 +4,23 @@
 
 
 npm install
+
 `npm install`
 
 production build
+
 `npm run build`
 
 dev watch
+
 `npm run dev`
 
 flash to the device
+
 `npm run flash`
 
 run the local webserver
+
 `npm start`
 
 
