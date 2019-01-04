@@ -1,11 +1,12 @@
 # photon angled light
 
 TODO: 
-- Alexa
 - More fun modes: throbbing
+- debug working on iphone.
 - Publish mode changes to UI? Would this need React?
 
 DONE:
+- Alexa
 - Move to materialize
 - figure out how to build on netlify
 - test out defaults and disabled or slow wifi

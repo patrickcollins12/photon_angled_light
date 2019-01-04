@@ -27,7 +27,9 @@ int g_value = 255;
 int b_value = 255;
 int w_value = 255;
 uint32_t rgbw_value;
-int brightness = 255;
+int brightness = 128;
+int old_brightness = 0;
+
 int party_speed = 3;
 int colorcycle_speed = 250;
 int timeOutSeconds = 5;
@@ -39,6 +41,8 @@ bool success_c  = Particle.function("rgb_value", set_rgb);
 bool success_w  = Particle.function("w_value", set_w);
 bool success_sw = Particle.function("schedule", set_schedule);
 bool success_m  = Particle.function("mode", set_mode);
+bool success_pm  = Particle.function("party", set_party);
+
 bool success_b  = Particle.function("brightness", set_brightness);
 bool success_ps = Particle.function("party_speed", set_party_speed);
 bool success_cs = Particle.function("color_speed", set_colorcycle_speed);
@@ -52,8 +56,11 @@ void startTimer() {
 
 void endTimer() {
   timer = 0;
+  if (old_brightness>0) {
+    brightness = old_brightness;
+    old_brightness = 0;
+  }
 }
-
 
 int set_rgb(String rgb) {
   sscanf(rgb, "#%02x%02x%02x", &r_value, &g_value, &b_value);
@@ -79,14 +86,21 @@ int set_schedule(String p) {
 }
 
 int set_mode(String p) {
-   mode = p;
+  mode = p;
 
-   // For all modes except natural and off, start the timer off
-   if (mode == "party" ) {
-      startTimer();
-   }
+  // For party mode, start the timer off and pump the brightness
+  if (mode == "party" ) {
+    old_brightness=brightness;
+    brightness=255;
 
-   return 0;
+    startTimer();
+  }
+
+  return 0;
+}
+
+int set_party(String p) {
+  return set_mode("party");
 }
 
 int set_brightness(String b) {
@@ -152,15 +166,14 @@ void loop() {
   }
 
   if (mode == "colorcycle") {
-    //  rainbow(colorcycle_speed);
+     rainbow(colorcycle_speed);
   }
 
   if (mode == "colorwhite") {
     whiteOverRainbow(3,50,1);
-
   }
 
-  else if (mode == "color" ) {
+  if (mode == "color" ) {
      colorAll(strip.Color(g_value,r_value,b_value,w_value), 100);
   }
   
