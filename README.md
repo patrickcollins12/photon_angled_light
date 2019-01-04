@@ -3,19 +3,19 @@
 ## COMMANDS
 
 
-### npm install
+npm install
 `npm install`
 
-### production build
+production build
 `npm run build`
 
-### dev watch
+dev watch
 `npm run dev`
 
-### flash to the device
+flash to the device
 `npm run flash`
 
-### run the local webserver
+run the local webserver
 `npm start`
 
 
