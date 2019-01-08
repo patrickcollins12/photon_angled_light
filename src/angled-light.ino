@@ -89,6 +89,9 @@ int set_mode(String p) {
   return 0;
 }
 
+// this is the mode called by alexa.
+// It is temporary / timed.
+// the timeout is managed at the bottom of the loop.
 int set_party(String p) {
   old_brightness=brightness;
   brightness=255;
