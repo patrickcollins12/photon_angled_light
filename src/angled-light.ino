@@ -82,24 +82,19 @@ int set_schedule(String p) {
   } else {
     return 1;
   }
-   
 }
 
 int set_mode(String p) {
   mode = p;
-
-  // For party mode, start the timer off and pump the brightness
-  if (mode == "party" ) {
-    old_brightness=brightness;
-    brightness=255;
-
-    startTimer();
-  }
-
   return 0;
 }
 
 int set_party(String p) {
+  old_brightness=brightness;
+  brightness=255;
+
+  startTimer();
+
   return set_mode("party");
 }
 
