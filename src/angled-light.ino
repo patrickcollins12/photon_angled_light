@@ -5,7 +5,7 @@
 
 void colorAll(uint32_t c, uint8_t wait);
 void colorWipe(uint32_t c, uint8_t wait);
-void rainbow(uint8_t wait);
+void rainbow(int wait);
 void rainbowCycle(uint8_t wait);
 uint32_t Wheel(byte WheelPos);
 
@@ -49,6 +49,7 @@ bool success_cs = Particle.function("color_speed", set_colorcycle_speed);
 
 // Cloud functions must return int and take one String
 
+// Timer: Auto-off Party Mode
 unsigned long timer = 0;
 void startTimer() {
   timer = millis();
@@ -61,6 +62,7 @@ void endTimer() {
     old_brightness = 0;
   }
 }
+
 
 int set_rgb(String rgb) {
   sscanf(rgb, "#%02x%02x%02x", &r_value, &g_value, &b_value);
@@ -292,17 +294,27 @@ void colorWipe(uint32_t c, uint8_t wait) {
   }
 }
 
-void rainbow(uint8_t wait) {
-  uint16_t i, j;
 
-  for(j=0; j<256; j++) {
-    for(i=0; i<strip.numPixels(); i++) {
+unsigned long old_millis = 0;
+uint16_t j = 0;
+void rainbow(int wait) {
+
+  // manage the delay
+  if (millis() - old_millis >= (unsigned long)wait ) {
+
+    // if we've waited long enough, change our lights.
+    for(uint16_t i=0; i<strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel((i+j) & 255));
     }
     strip.setBrightness(brightness);
     strip.show();
-    delay(wait);
+
+    // reset the timer to 300ms
+    // then increment the color after each sleep delay
+    old_millis = millis();
+    if (j++==256) { j = 0; }
   }
+
 }
 
 // Slightly different, this makes the rainbow equally distributed throughout, then wait (ms)
