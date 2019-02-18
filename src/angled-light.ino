@@ -300,7 +300,6 @@ void colorWipe(uint32_t c, uint8_t wait) {
 // uint16_t j = 0;
 unsigned long old_millis = 0;
 uint16_t j = 0;
-
 void rainbow(int wait) {
 
   // manage the delay
@@ -308,7 +307,7 @@ void rainbow(int wait) {
 
     // if we've waited long enough, change our lights.
     for(uint16_t i=0; i<strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel((i+j) & 255));
+      strip.setPixelColor(i, Wheel((j) & 255));
     }
     strip.setBrightness(brightness);
     strip.show();
