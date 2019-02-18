@@ -5,8 +5,10 @@
 
 void colorAll(uint32_t c, uint8_t wait);
 void colorWipe(uint32_t c, uint8_t wait);
-void rainbow(uint8_t wait);
+// void rainbow(uint8_t wait);
+void rainbow(int wait);
 void rainbowCycle(uint8_t wait);
+
 uint32_t Wheel(byte WheelPos);
 
 /* ======================= extra-examples.cpp ======================== */
@@ -36,16 +38,6 @@ int timeOutSeconds = 5;
 
 String schedule = "on"; // on|off
 String mode = "natural";
-
-bool success_c  = Particle.function("rgb_value", set_rgb);
-bool success_w  = Particle.function("w_value", set_w);
-bool success_sw = Particle.function("schedule", set_schedule);
-bool success_m  = Particle.function("mode", set_mode);
-bool success_pm  = Particle.function("party", set_party);
-
-bool success_b  = Particle.function("brightness", set_brightness);
-bool success_ps = Particle.function("party_speed", set_party_speed);
-bool success_cs = Particle.function("color_speed", set_colorcycle_speed);
 
 // Cloud functions must return int and take one String
 
@@ -128,6 +120,16 @@ void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
   calc_rgbw();
+
+  bool success_c  = Particle.function("rgb_value", set_rgb);
+  bool success_w  = Particle.function("w_value", set_w);
+  bool success_sw = Particle.function("schedule", set_schedule);
+  bool success_m  = Particle.function("mode", set_mode);
+  bool success_pm  = Particle.function("party", set_party);
+
+  bool success_b  = Particle.function("brightness", set_brightness);
+  bool success_ps = Particle.function("party_speed", set_party_speed);
+  bool success_cs = Particle.function("color_speed", set_colorcycle_speed);
 
   // Allow reading from the photon the existing settings
   Particle.variable("schedule", schedule);
@@ -289,18 +291,48 @@ void colorWipe(uint32_t c, uint8_t wait) {
   }
 }
 
-void rainbow(uint8_t wait) {
-  uint16_t i, j;
+// -void rainbow(uint8_t wait) {
+//   uint16_t i, j;
 
-  for(j=0; j<256; j++) {
-    for(i=0; i<strip.numPixels(); i++) {
+//   for(j=0; j<256; j++) {
+//     for(i=0; i<strip.numPixels(); i++) {
+// unsigned long old_millis = 0;
+// uint16_t j = 0;
+unsigned long old_millis = 0;
+uint16_t j = 0;
+
+void rainbow(int wait) {
+
+  // manage the delay
+  if (millis() - old_millis >= (unsigned long)wait ) {
+
+    // if we've waited long enough, change our lights.
+    for(uint16_t i=0; i<strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel((i+j) & 255));
     }
     strip.setBrightness(brightness);
     strip.show();
-    delay(wait);
+    // delay(wait);
+
+    // reset the timer to 300ms
+    // then increment the color after each sleep delay
+    old_millis = millis();
+    if (j++==256) { j = 0; }
   }
 }
+
+// void rainbow(uint8_t wait) {
+//   uint16_t i, j;
+
+//   for(j=0; j<256; j++) {
+//     for(i=0; i<strip.numPixels(); i++) {
+//       strip.setPixelColor(i, Wheel((i+j) & 255));
+//     }
+//     strip.setBrightness(brightness);
+//     strip.show();
+//     delay(wait);
+//   }
+// }
 
 // Slightly different, this makes the rainbow equally distributed throughout, then wait (ms)
 void rainbowCycle(uint8_t wait) {

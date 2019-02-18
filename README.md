@@ -1,5 +1,6 @@
 # photon angled light
 
+<<<<<<< HEAD
 
 ## TODO
 - More fun modes: throbbing
@@ -13,6 +14,14 @@
 
 ### DONE
 - Alexa
+=======
+TODO: 
+- Alexa
+- More fun modes: throbbing
+- Publish mode changes to UI? Would this need React?
+
+DONE:
+>>>>>>> parent of ae424be... Finished and done!
 - Move to materialize
 - figure out how to build on netlify
 - test out defaults and disabled or slow wifi
