@@ -127,10 +127,40 @@
 					Fast (1ms) <input class="pcrange" type="range" id="party_speed" name="party_speed" min="1" max="20" value="0"> Slow (20ms)
 				</div>
 
-				<div id="colorcycle_section" class="mode_section">
+				<!-- <div id="colorcycle_section" class="mode_section">
 					<label for="color_speed">Color Cycle Speed</label><br>
 					Fast (1ms) <input class="pcrange" type="range" id="color_speed" name="color_speed" min="1" max="1000" value="0"> Slow (1000ms)
+				</div> -->
+				<div id="colorcycle_section" class="mode_section">
+					<form action="#">
+						<label >Color Cycle Speed <span id="color_speed_val"></span>ms</label><br>
+						<p>
+							<label>
+								<input type="radio" name="color_speed" value="20">
+								<span>Very Fast</span>
+							</label>
+						</p>
+						<p>
+							<label>
+								<input type="radio" name="color_speed" value="100">
+								<span>Fast</span>
+							</label>
+						</p>
+						<p>
+							<label>
+								<input type="radio" name="color_speed" value="1000" checked>
+								<span>Slow</span>
+							</label>
+						</p>
+						<p>
+							<label>
+								<input type="radio" name="color_speed" value="2000">
+								<span>Very Slow</span>
+							</label>
+						</p>
+					</form>
 				</div>
+
 			</div>
 		</div>
 	</div>

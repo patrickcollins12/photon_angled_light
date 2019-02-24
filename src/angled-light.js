@@ -45,11 +45,19 @@ function setup() {
   }, false);
 
   // color speed
-  var csSlider = document.querySelector("#color_speed");
-  csSlider.addEventListener("change", function(event) {
-    callParticleFunction("color_speed", event.target.value);
+  var s = document.querySelectorAll('input[name="color_speed"]');
+  for (var i = 0, len = s.length; i < len; i++) {
+    s[i].addEventListener("click", function(event) {
+      var speed = event.target.value;
+      callParticleFunction("color_speed", speed);
+      document.querySelector("#color_speed_val").innerHTML = speed;
+    });
+  }
 
-  }, false);
+  // csSlider.addEventListener("change", function(event) {
+  //   callParticleFunction("color_speed", event.target.value);
+
+  // }, false);
 
   // setup schedule event listener
   var scheduleCheckbox = document.querySelector("#schedule");
@@ -223,7 +231,7 @@ function displaySubSection(mode) {
 
     if (mode=="colorcycle") {
       readParticleVariable("color_speed",function(speed) {
-        document.querySelector("#color_speed").value = speed;
+        document.querySelector("#color_speed_val").innerHTML = speed;
       });
     }
 

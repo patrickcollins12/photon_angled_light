@@ -33,7 +33,7 @@ int brightness = 128;
 int old_brightness = 0;
 
 int party_speed = 3;
-int colorcycle_speed = 250;
+int colorcycle_speed = 1000;
 int timeOutSeconds = 5;
 
 String schedule = "on"; // on|off
@@ -196,6 +196,17 @@ void calc_rgbw() {
   rgbw_value = (rgbw_value << 8) + w_value;
 }
 
+uint32_t makeColor(r,g,b,w) {
+
+  unit8_t r = (c >>  0) & 0xFF;
+  unit8_t g = (c >>  8) & 0xFF;
+  unit8_t b = (c >> 16) & 0xFF;
+  unit8_t w = (v >> 24) & 0xFF;
+
+  color & 0x000000FF
+  return uint32_t((a << 24) | (r << 16) | (g << 8) | b);
+}
+
 
 
 /* ------------------------------------------------------------------------*/
@@ -269,7 +280,8 @@ void whiteOverRainbow(uint8_t wait, uint8_t whiteSpeed, uint8_t whiteLength ) {
 
 }
 
-// Set all pixels in the strip to a solid color, then wait (ms)
+// Move all pixels in the strip to a specific color, then wait (ms)
+//uint32_t color = strip.getPixelColor(11);
 void colorAll(uint32_t c, uint8_t wait) {
   uint16_t i;
 
@@ -281,6 +293,18 @@ void colorAll(uint32_t c, uint8_t wait) {
   delay(wait);
 }
 
+// // Set all pixels in the strip to a solid color, then wait (ms)
+// void colorAll(uint32_t c, uint8_t wait) {
+//   uint16_t i;
+
+//   for(i=0; i<strip.numPixels(); i++) {
+//     strip.setPixelColor(i, c);
+//   }
+//   strip.setBrightness(brightness);
+//   strip.show();
+//   delay(wait);
+// }
+
 // Fill the dots one after the other with a color, wait (ms) after each one
 void colorWipe(uint32_t c, uint8_t wait) {
   for(uint16_t i=0; i<strip.numPixels(); i++) {
@@ -291,34 +315,26 @@ void colorWipe(uint32_t c, uint8_t wait) {
   }
 }
 
-// -void rainbow(uint8_t wait) {
-//   uint16_t i, j;
-
-//   for(j=0; j<256; j++) {
-//     for(i=0; i<strip.numPixels(); i++) {
 // unsigned long old_millis = 0;
 // uint16_t j = 0;
-unsigned long old_millis = 0;
-uint16_t j = 0;
-void rainbow(int wait) {
+// void rainbow_orig(int wait) {
 
-  // manage the delay
-  if (millis() - old_millis >= (unsigned long)wait ) {
+//   // manage the delay
+//   if (millis() - old_millis >= (unsigned long)wait ) {
 
-    // if we've waited long enough, change our lights.
-    for(uint16_t i=0; i<strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel((j) & 255));
-    }
-    strip.setBrightness(brightness);
-    strip.show();
-    // delay(wait);
+//     // if we've waited long enough, change our lights.
+//     for(uint16_t i=0; i<strip.numPixels(); i++) {
+//       strip.setPixelColor(i, Wheel((j) & 255));
+//     }
+//     strip.setBrightness(brightness);
+//     strip.show();
 
-    // reset the timer to 300ms
-    // then increment the color after each sleep delay
-    old_millis = millis();
-    if (j++==256) { j = 0; }
-  }
-}
+//     // reset the timer to 300ms
+//     // then increment the color after each sleep delay
+//     old_millis = millis();
+//     if (j++==256) { j = 0; }
+//   }
+// }
 
 // void rainbow(uint8_t wait) {
 //   uint16_t i, j;
@@ -332,6 +348,37 @@ void rainbow(int wait) {
 //     delay(wait);
 //   }
 // }
+
+
+// make a transition through portions of the rainbow 
+// there are 10 parts of the rainbow
+int rainbow_portions = 7;
+float rainbow_range = 256/rainbow_portions;
+unsigned long old_millis = 0;
+uint16_t j = 0;
+void rainbow(int wait ) {
+
+  // manage the delay
+  if (millis() - old_millis >= (unsigned long)wait ) {
+
+    // if we've waited long enough, change our lights.
+    // We want to go from j to j+rainbow_range
+    int numPixels = strip.numPixels();
+    float colorIncrement = rainbow_range / numPixels;
+    for(uint16_t i=0; i<numPixels; i++) {
+      uint8_t wheel = (uint8_t)(j+colorIncrement*i);
+      strip.setPixelColor(i, Wheel(wheel & 255));
+    }
+    strip.setBrightness(brightness);
+    strip.show();
+
+    // reset the timer to 300ms
+    // then increment the color after each sleep delay
+    old_millis = millis();
+    if (j++==256) { j = 0; }
+  }
+}
+
 
 // Slightly different, this makes the rainbow equally distributed throughout, then wait (ms)
 void rainbowCycle(uint8_t wait) {
