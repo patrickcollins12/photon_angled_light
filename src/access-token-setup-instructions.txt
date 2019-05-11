@@ -1,0 +1,8 @@
+curl https://api.particle.io/oauth/token \
+       -u particle:particle \
+       -d 'client_id=angledlight-5865' \
+       -d grant_type=password \
+       -d expires_in=0 \
+       -d "username=pcollins1@gmail.com" \
+       -d 'password=<my1passwordpassword>'
+
