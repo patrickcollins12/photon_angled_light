@@ -196,16 +196,16 @@ void calc_rgbw() {
   rgbw_value = (rgbw_value << 8) + w_value;
 }
 
-uint32_t makeColor(r,g,b,w) {
+// uint32_t makeColor(r,g,b,w) {
 
-  unit8_t r = (c >>  0) & 0xFF;
-  unit8_t g = (c >>  8) & 0xFF;
-  unit8_t b = (c >> 16) & 0xFF;
-  unit8_t w = (v >> 24) & 0xFF;
+//   unit8_t r = (c >>  0) & 0xFF;
+//   unit8_t g = (c >>  8) & 0xFF;
+//   unit8_t b = (c >> 16) & 0xFF;
+//   unit8_t w = (v >> 24) & 0xFF;
 
-  color & 0x000000FF
-  return uint32_t((a << 24) | (r << 16) | (g << 8) | b);
-}
+//   color & 0x000000FF
+//   return uint32_t((a << 24) | (r << 16) | (g << 8) | b);
+// }
 
 
 
