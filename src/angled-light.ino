@@ -1,5 +1,9 @@
 #include "Particle.h"
 #include "neopixel.h"
+#include "ColorC.h"
+Rgb rgb1 = { 100,120,150};
+Rgb rgb2 = { 50,120,150};
+Rgb rgb3 = color_add_rgb(rgb1,rgb2,0.5);
 
 /* ======================= prototypes =============================== */
 
@@ -20,7 +24,6 @@ SYSTEM_MODE(AUTOMATIC);
 #define PIXEL_COUNT 11
 #define PIXEL_PIN D2
 #define PIXEL_TYPE SK6812RGBW
-
 
 Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
 

@@ -3,6 +3,8 @@
 
 ## TODO
 - More fun modes: throbbing, overlay one mode for another.
+- get serial particle console logging going
+- color speed radio boxes don't select/update current value
 - BUG: debug working on iphone
 - add domain to netlify?
 - make some auth to distribute to others
