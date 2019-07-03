@@ -49,11 +49,40 @@ Rgb cmyk_to_rgb(Cmyk cmyk) {
     // cout << c << "," << m << "," << y << "," << k << endl;
 
     Rgb rgb;
-    rgb.r = round((1.0-c)*(1.0-k)*255);
-    rgb.g = round((1.0-m)*(1.0-k)*255);
-    rgb.b = round((1.0-y)*(1.0-k)*255);
+    rgb.r = round((1.0-c)*(1.0-k)*255.0);
+    rgb.g = round((1.0-m)*(1.0-k)*255.0);
+    rgb.b = round((1.0-y)*(1.0-k)*255.0);
     return rgb;
 }
+
+// https://codebeautify.org/rgb-to-cmyk-converter
+// function RgbToCmyk(r, g, b) {
+//     if (0 == r && 0 == g && b == a)
+//         return [0, 0, 0, 1];
+//     var r2 = 1 - r / 255
+//       , g2 = 1 - g / 255
+//       , b2 = 1 - b / 255
+//       , k = Math.min(r2, Math.min(g2, b2)),
+//       , c = (r2 - k) / (1 - k)
+//       , m = (g2 - k) / (1 - k)
+//       , y = (b2 - k) / (1 - k);
+//     return c.toFixed(4) + "," + m.toFixed(4) + "," + y.toFixed(4) + "," + k.toFixed(4)
+// }
+// function cmyk2rgb(e, h, a, m) {
+//     var r = Number(e)
+//       , b = Number(h)
+//       , c = Number(a)
+//       , n = Number(m);
+//     return 0 < r ? r /= 100 : 0 < b ? b /= 100 : 0 < c ? c /= 100 : 0 < n && (n /= 100),
+//     rgb_r = 1 - Math.min(1, r * (1 - n) + n),
+//     rgb_g = 1 - Math.min(1, b * (1 - n) + n),
+//     rgb_b = 1 - Math.min(1, c * (1 - n) + n),
+//     rgb_r = Math.round(255 * rgb_r),
+//     rgb_g = Math.round(255 * rgb_g),
+//     rgb_b = Math.round(255 * rgb_b),
+//     rgb_r + "," + rgb_g + "," + rgb_b
+// }
+
 
 Rgb color_add_rgb(Rgb r1, Rgb r2, float mix) {
     Cmyk c1 = rgb_to_cmyk(r1);
