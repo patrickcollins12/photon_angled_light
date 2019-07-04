@@ -2,7 +2,7 @@ photon_firmware*.bin
 color_test_unit
 color_test
 *.o
-build/*
+build/**
 
 # Logs
 logs
