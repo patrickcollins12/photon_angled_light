@@ -11,7 +11,7 @@ TEST( Basics, Lerp ) {
     ASSERT_EQ( lerp( 10, 20, .5 ),15 );
     ASSERT_EQ( lerp( -10, 10, .5 ), 0 );
     ASSERT_EQ( lerp( 0, 10, .1 ), 1 );
-    EXPECT_EQ( lerp( 0, 10, .1 ), .9 );
+    // EXPECT_EQ( lerp( 0, 10, .1 ), .9 );
 
 }
 
