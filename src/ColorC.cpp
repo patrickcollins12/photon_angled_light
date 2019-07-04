@@ -110,7 +110,7 @@ float max3( float a, float b, float c ) {
    return ( ( max < c ) ? c : max );
 }
 
+// linear interpolation between point a and point b by c (0.0-1.0).
 int lerp( int a, int b, float c ) {
    return round((b - a) * c + a);
 }
-
