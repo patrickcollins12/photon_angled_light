@@ -1,6 +1,8 @@
 #include "Particle.h"
 #include "neopixel.h"
 #include "ColorC.h"
+
+
 Rgb rgb1 = { 100,120,150};
 Rgb rgb2 = { 50,120,150};
 Rgb rgb3 = color_add_rgb(rgb1,rgb2,0.5);
@@ -12,7 +14,6 @@ void colorWipe(uint32_t c, uint8_t wait);
 // void rainbow(uint8_t wait);
 void rainbow(int wait);
 void rainbowCycle(uint8_t wait);
-
 uint32_t Wheel(byte WheelPos);
 
 /* ======================= extra-examples.cpp ======================== */
@@ -39,8 +40,13 @@ int party_speed = 3;
 int colorcycle_speed = 1000;
 int timeOutSeconds = 5;
 
+int mix_duration = 2000;
+int mix_tick= 100000;
+
 String schedule = "on"; // on|off
-String mode = "natural";
+
+// String mode = "natural";
+String mode = "colorcycle";
 
 // Cloud functions must return int and take one String
 
@@ -95,6 +101,7 @@ int set_party(String p) {
 
 int set_brightness(String b) {
    brightness = b.toInt();
+   strip.setBrightness(brightness);
    return 0;
 }
 
@@ -124,6 +131,8 @@ void setup() {
   strip.show(); // Initialize all pixels to 'off'
   calc_rgbw();
 
+  Serial.begin(9600);
+
   bool success_c  = Particle.function("rgb_value", set_rgb);
   bool success_w  = Particle.function("w_value", set_w);
   bool success_sw = Particle.function("schedule", set_schedule);
@@ -149,8 +158,10 @@ void setup() {
 }
 
 // MAIN LOOP
+int show;
 void loop() {
-
+   
+  show=0;
   // Lights off as scheduled between 4am and 5pm
   if (schedule == "on" && Time.hour() > 4 && Time.hour() < 17  ) {
     off(1000);
@@ -167,6 +178,10 @@ void loop() {
 
   if (mode == "colorcycle") {
      rainbow(colorcycle_speed);
+     float mix = (float)mix_tick/(float)mix_duration;
+     mixin(strip.Color(0,0,0,150), mix);
+     mix_tick++;
+     if (mix_tick > mix_duration ) { mix_tick=0; }
   }
 
   if (mode == "colorwhite") {
@@ -181,6 +196,10 @@ void loop() {
      colorAll(strip.Color(0,0,0,150), 100); 
   }
 
+  if (show) {
+    strip.show();
+  }
+
   // 1000*timeOutSeconds = 3000
   // startTimer = 123456
   // if millis
@@ -189,7 +208,6 @@ void loop() {
     endTimer();
     set_mode("natural");
   }
-  
 }
 
 void calc_rgbw() {
@@ -209,7 +227,6 @@ void calc_rgbw() {
 //   color & 0x000000FF
 //   return uint32_t((a << 24) | (r << 16) | (g << 8) | b);
 // }
-
 
 
 /* ------------------------------------------------------------------------*/
@@ -318,6 +335,34 @@ void colorWipe(uint32_t c, uint8_t wait) {
   }
 }
 
+void mixin(uint32_t c, float mix) {
+
+  for(uint16_t i=0; i<strip.numPixels(); i++) {
+    uint32_t ce = strip.getPixelColor(i);
+    uint32_t c3 = color_add_rgb(c,ce,mix);
+
+    if (i  == 0) {
+      String s1 = printColor(c);
+      String s2 = printColor(ce);
+      String s3 = printColor(c3);
+      Serial.printlnf("mix %f. %s + %s = %s", mix, s1.c_str(),s2.c_str(),s3.c_str());
+    }
+  
+    strip.setPixelColor(i, c3);
+    // strip.setBrightness(brightness);
+    // strip.show();
+    // delay(wait);
+  }
+}
+
+String printColor(uint32_t c) {
+    uint8_t w = (uint8_t)((c >> 24) & 0xFF);
+    uint8_t r = (uint8_t)((c >> 16) & 0xFF);
+    uint8_t g = (uint8_t)((c >>  8) & 0xFF);
+    uint8_t b = (uint8_t)((c      ) & 0xFF);
+    return String::format("{%d %d %d} {w%d}", r,g,b,w );
+}
+
 // unsigned long old_millis = 0;
 // uint16_t j = 0;
 // void rainbow_orig(int wait) {
@@ -372,8 +417,9 @@ void rainbow(int wait ) {
       uint8_t wheel = (uint8_t)(j+colorIncrement*i);
       strip.setPixelColor(i, Wheel(wheel & 255));
     }
-    strip.setBrightness(brightness);
-    strip.show();
+    
+    show=1;
+    // strip.show();
 
     // reset the timer to 300ms
     // then increment the color after each sleep delay

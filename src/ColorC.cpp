@@ -1,7 +1,7 @@
-#include "ColorC.h"
 // #include <iostream>
 // using namespace std;
 #include <math.h>       /* round, floor, ceil, trunc */
+#include "ColorC.h"
 
 // FROM: https://www.rapidtables.com/convert/color/cmyk-to-rgb.html
 
@@ -10,6 +10,29 @@
 
 // #include <algorithm>
 // #include <initializer_list>
+
+uint32_t packColor(Rgb col) {
+    return packColor(col.r, col.g, col.b, col.w);
+}
+
+uint32_t packColor(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
+    uint32_t cc=0;
+    cc |= (w & 255) << 24;
+    cc |= (r & 255) << 16;
+    cc |= (g & 255) << 8;
+    cc |= (b & 255);
+    return cc;
+}
+
+Rgb unpackColor(uint32_t c)
+{
+    Rgb cc;
+    cc.w = (uint8_t)((c >> 24) & 0xFF);
+    cc.r = (uint8_t)((c >> 16) & 0xFF);
+    cc.g = (uint8_t)((c >>  8) & 0xFF);
+    cc.b = (uint8_t)((c      ) & 0xFF);
+    return cc;
+}
 
 Cmyk rgb_to_cmyk(Rgb rgb) {
     Cmyk cmyk;
@@ -36,6 +59,7 @@ Cmyk rgb_to_cmyk(Rgb rgb) {
     cmyk.m = round(m * 100);
     cmyk.y = round(y * 100);
     cmyk.k = round(k * 100);
+    cmyk.w = rgb.w;
 
     return cmyk;
 }
@@ -52,6 +76,7 @@ Rgb cmyk_to_rgb(Cmyk cmyk) {
     rgb.r = round((1.0-c)*(1.0-k)*255.0);
     rgb.g = round((1.0-m)*(1.0-k)*255.0);
     rgb.b = round((1.0-y)*(1.0-k)*255.0);
+    rgb.w = cmyk.w;
     return rgb;
 }
 
@@ -84,6 +109,12 @@ Rgb cmyk_to_rgb(Cmyk cmyk) {
 // }
 
 
+uint32_t color_add_rgb(uint32_t c1, uint32_t c2, float mix) {
+    Rgb c3 = color_add_rgb( unpackColor(c1), 
+                            unpackColor(c2), mix);
+    return packColor(c3);
+}
+
 Rgb color_add_rgb(Rgb r1, Rgb r2, float mix) {
     Cmyk c1 = rgb_to_cmyk(r1);
     Cmyk c2 = rgb_to_cmyk(r2);
@@ -97,6 +128,7 @@ Cmyk color_add_cmyk(Cmyk c1, Cmyk c2, float mix) {
     c3.m = lerp(c1.m,c2.m,mix);
     c3.y = lerp(c1.y,c2.y,mix);
     c3.k = lerp(c1.k,c2.k,mix);
+    c3.w = lerp(c1.w,c2.w,mix);
     return c3;
 }
 
@@ -113,4 +145,23 @@ float max3( float a, float b, float c ) {
 // linear interpolation between point a and point b by c (0.0-1.0).
 int lerp( int a, int b, float c ) {
    return round((b - a) * c + a);
-}   
+}
+
+// char *rgbtostr(Rgb c) {
+//     char str[80];
+//     sprintf(str, "{%d %d %d} {w%d}",c.r,c.g,c.b,c.w);
+//     return str;
+// }
+
+// string rgbtostr(Rgb c) {
+//     // string greet = String.Format("Hello {0}!", place);
+//     ostringstream os;
+//     os << "{" << c.r << " " << c.g << " " << c.b << "} {w" << c.w << "}";
+//     return os.str();
+//     // return s;
+// }
+
+// string rgbtostrUint32(uint32_t c) {
+//     return rgbtostr(unpackColor(c));
+// }
+
