@@ -1,5 +1,10 @@
-# photon angled light
+# Photon Angled Light
 
+I have built a Resin Wooden light. The light uses a [Particle Photon microcontroller](https://docs.particle.io/photon/). 
+
+This source repository contains:
+ - the JS-based user interface for the remote control [which is hosted here](https://photon-angled.netlify.com).
+ - the Arduino code to flash to the Particle Photon. 
 
 ## TODO
 - More fun modes: throbbing, overlay one mode for another.
