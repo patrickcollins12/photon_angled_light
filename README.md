@@ -1,6 +1,6 @@
 # Photon Angled Light
 
-I have built a Resin Wooden light. The light uses a [Particle Photon microcontroller](https://docs.particle.io/photon/). 
+I have built a wooden light sculpture out of walnut and epoxy resin. The light uses an embedded [Particle Photon microcontroller](https://docs.particle.io/photon/). The light has different modes and can be controlled by a web-based user interface.
 
 This source repository contains:
  - the JS-based user interface for the remote control [which is hosted here](https://photon-angled.netlify.com).
