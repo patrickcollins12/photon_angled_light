@@ -153,7 +153,7 @@ void setup() {
   Particle.variable("rgbw_value", rgbw_value); // be sure to call calc_rgbw first
 
   // set the timezone, not it is not DST sensitive.
-  Time.zone(-8);
+  Time.zone(10);
 
 }
 

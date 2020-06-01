@@ -27,6 +27,7 @@
     "html-webpack-plugin": "^3.2.0",
     "jquery": "^3.4.1",
     "materialize-css": "^1.0.0",
+    "particle-cli": "^2.7.0",
     "webpack": "^4.35.2",
     "webpack-cli": "^3.3.5",
     "webpack-node-externals": "^1.7.2"
