@@ -28,10 +28,12 @@ SYSTEM_MODE(AUTOMATIC);
 
 Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
 
+// set default to orange
 int r_value = 255;
-int g_value = 255;
-int b_value = 255;
-int w_value = 255;
+int g_value = 106;
+int b_value = 0;
+int w_value = 60;
+
 uint32_t rgbw_value;
 int brightness = 128;
 int old_brightness = 0;
@@ -48,8 +50,13 @@ String schedule = "off"; // on|off
 int time_on = 17; // turn on  at 5pm (17:00)
 int time_off=  4; // turn off at 4am (04:00)
 
+// String mode = "color";
+String mode = "random";
 
-String mode = "natural";
+// st super mode to "random" to move randomly between different modes
+String super_mode = "off";
+double super_mode_last_change_millis = -1;
+
 // String mode = "colorcycle";
 
 // Cloud functions must return int and take one String
@@ -91,6 +98,14 @@ int set_schedule(String p) {
 
 int set_mode(String p) {
   mode = p;
+  Serial.printlnf("mode %s", mode.c_str() );
+  super_mode = "off";
+  return 0;
+}
+
+int set_random_mode(String p) {
+  set_mode(p);
+  super_mode = "random";
   return 0;
 }
 
@@ -135,6 +150,8 @@ void setup() {
   strip.show(); // Initialize all pixels to 'off'
   calc_rgbw();
 
+  srand (millis());
+
   Serial.begin(9600);
 
   bool success_c  = Particle.function("rgb_value", set_rgb);
@@ -164,28 +181,56 @@ void setup() {
 // MAIN LOOP
 int show;
 void loop() {
-   
+  // Serial.printlnf("millis %lu, mode %s", millis(), mode.c_str());
+
+
   show=0;
   // Lights off as scheduled between 4am and 5pm
-  if (schedule == "on" && Time.hour() > time_off && Time.hour() < time_on  ) {
-    off(1000);
+  if (schedule == "on") {
+    if( Time.hour() > time_off && Time.hour() < time_on  ) {
+      off(1000);
+    }
   }
 
   // fold this into the schedule?
   if (mode == "off") {
       off(1000);
   }
-  
+
+  if (mode == "random") {
+    super_mode = "random";
+    set_random_mode("natural");
+  }
+
+  if (super_mode == "random") {
+    // 1000=1s, 3000=3s, 10000=10s, 60000=60s/1m, 600000=600s/10m
+    int current_millis = millis()/(60000.0); // PROD
+    // int current_millis = millis()/(3000.0); // DEV
+
+    if (current_millis > super_mode_last_change_millis ) {
+      super_mode_last_change_millis = current_millis;
+
+      set_random_mode("natural");
+
+      // 1 in 60 chance of going into colorcycle
+      if ( ! (rand() % 60) ) set_random_mode("colorcycle"); //mode = "colorcycle";
+
+      // 1 in 100 chance of going into party
+      if ( ! (rand() % 600) ) set_random_mode("party");
+    }
+    
+  }
+
   if (mode == "party") {
      rainbowCycle(party_speed);
   }
 
   if (mode == "colorcycle") {
      rainbow(colorcycle_speed);
-     float mix = (float)mix_tick/(float)mix_duration;
-     mixin(strip.Color(0,0,0,150), mix);
-     mix_tick++;
-     if (mix_tick > mix_duration ) { mix_tick=0; }
+    //  float mix = (float)mix_tick/(float)mix_duration;
+    //  mixin(strip.Color(0,0,0,150), mix);
+    //  mix_tick++;
+    //  if (mix_tick > mix_duration ) { mix_tick=0; }
   }
 
   if (mode == "colorwhite") {
@@ -193,11 +238,18 @@ void loop() {
   }
 
   if (mode == "color" ) {
-     colorAll(strip.Color(g_value,r_value,b_value,w_value), 100);
+     colorAll(strip.Color(g_value,r_value,b_value,w_value), 1);
   }
   
   else if (mode == "natural") {
-     colorAll(strip.Color(0,0,0,150), 100); 
+
+    // this is a nice natural orange yellow glow
+    // int r_value = 255;
+    // int g_value = 106;
+    // int b_value = 0;
+    // int w_value = 60;
+
+     colorAll(strip.Color(106,255,0,60), 1); 
   }
 
   if (show) {
@@ -212,6 +264,7 @@ void loop() {
     endTimer();
     set_mode("natural");
   }
+
 }
 
 void calc_rgbw() {
