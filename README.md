@@ -8,7 +8,6 @@ This source repository contains:
 
 ## TODO
 - More fun modes: throbbing, overlay one mode for another.
-- get serial particle console logging going
 - color speed radio boxes don't select/update current value
 - BUG: debug working on iphone
 - add domain to netlify?
@@ -18,6 +17,8 @@ This source repository contains:
 - Make a base html home and serve from there. Already moved stuff to dist. https://stackoverflow.com/questions/27639005/how-to-copy-static-files-to-build-directory-with-webpack You don't need to copy things around, webpack works different than gulp. Webpack is a module bundler and everything you reference in your files will be included. You just need to specify a loader for that.
 
 ### DONE
+- random mode
+- get serial particle console logging going
 - Alexa
 - Move to materialize
 - figure out how to build on netlify
