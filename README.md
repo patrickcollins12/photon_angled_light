@@ -53,3 +53,9 @@ run the local webserver
 
 `npm start`
 
+debug particle 
+`particle serial monitor`
+or
+`particle flash 290031001047363336383437 && sleep 7 && particle serial monitor`
+
+To update netlify, just commit.
