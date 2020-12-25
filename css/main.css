@@ -26,3 +26,8 @@ h3,h4,h5 {
 .pcrange {
     max-width: 300px;
 }
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
