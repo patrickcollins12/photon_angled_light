@@ -46,7 +46,7 @@ int mix_duration = 2000;
 int mix_tick= 100000;
 
 // Turn this on to default to using the schedule in our timezone
-String schedule = "off"; // on|off
+String schedule = "on"; // on|off
 int time_on = 17; // turn on  at 5pm (17:00)
 int time_off=  4; // turn off at 4am (04:00)
 
@@ -174,7 +174,7 @@ void setup() {
   Particle.variable("rgbw_value", rgbw_value); // be sure to call calc_rgbw first
 
   // set the timezone, not it is not DST sensitive.
-  Time.zone(-8);
+  Time.zone(11);
 
 }
 
@@ -183,10 +183,11 @@ int show;
 void loop() {
   // Serial.printlnf("millis %lu, mode %s", millis(), mode.c_str());
 
-
   show=0;
+
   // Lights off as scheduled between 4am and 5pm
   if (schedule == "on") {
+    // Serial.printlnf("schedule is %s. Time is %d", schedule.c_str(), Time.hour() );
     if( Time.hour() > time_off && Time.hour() < time_on  ) {
       off(1000);
     }
@@ -259,6 +260,7 @@ void loop() {
   // 1000*timeOutSeconds = 3000
   // startTimer = 123456
   // if millis
+  // at end of party mode we go back to natural after timeOutSecond
   unsigned long now = millis();
   if ( timer>0 && now > timer + timeOutSeconds*1000 ) {
     endTimer();
