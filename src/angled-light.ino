@@ -50,29 +50,37 @@ String schedule = "on"; // on|off
 int time_on = 17; // turn on  at 5pm (17:00)
 int time_off=  4; // turn off at 4am (04:00)
 
-// String mode = "color";
-String mode = "random";
+String random_mode = "on"; // on|off
+
+// 1s,3s,10s,360 (6m), 600s(10m)
+int random_mode_wait_seconds = 360;
+
+// 1 in 2 (50%), 1 in 4 (25%), 1 in 6 (16%), 1 in 20 (5%), 1 in 60 (1.6%)
+int random_mode_frequency = 20;
+
+// String mode = "color", "party", "natural", etc;
+String mode = "natural";
 
 // st super mode to "random" to move randomly between different modes
-String super_mode = "off";
-double super_mode_last_change_millis = -1;
+// String super_mode = "off";
+long super_mode_last_change_millis = -1;
 
 // String mode = "colorcycle";
 
 // Cloud functions must return int and take one String
 
-unsigned long timer = 0;
-void startTimer() {
-  timer = millis();
-}
+// unsigned long timer = 0;
+// void startTimer() {
+//   timer = millis();
+// }
 
-void endTimer() {
-  timer = 0;
-  if (old_brightness>0) {
-    brightness = old_brightness;
-    old_brightness = 0;
-  }
-}
+// void endTimer() {
+//   timer = 0;
+//   if (old_brightness>0) {
+//     brightness = old_brightness;
+//     old_brightness = 0;
+//   }
+// }
 
 int set_rgb(String rgb) {
   sscanf(rgb, "#%02x%02x%02x", &r_value, &g_value, &b_value);
@@ -99,24 +107,24 @@ int set_schedule(String p) {
 int set_mode(String p) {
   mode = p;
   Serial.printlnf("mode %s", mode.c_str() );
-  super_mode = "off";
+  // super_mode = "off";
   return 0;
 }
 
 int set_random_mode(String p) {
-  set_mode(p);
-  super_mode = "random";
+  random_mode = p;
+  Serial.printlnf("random_mode is %s", random_mode.c_str() );
   return 0;
 }
 
-int set_party(String p) {
-  old_brightness=brightness;
-  brightness=255;
+// int set_party(String p) {
+//   old_brightness=brightness;
+//   brightness=255;
 
-  startTimer();
+//   startTimer();
 
-  return set_mode("party");
-}
+//   return set_mode("party");
+// }
 
 int set_brightness(String b) {
    brightness = b.toInt();
@@ -132,6 +140,21 @@ int set_party_speed(String s) {
 int set_colorcycle_speed(String s) {
    colorcycle_speed = s.toInt();
    return 0;
+}
+
+int set_random_mode_wait_seconds(String s) {
+  random_mode_wait_seconds = s.toInt();
+  super_mode_last_change_millis=-1;
+  Serial.printlnf("random_mode_wait_seconds is %d seconds", random_mode_wait_seconds);
+
+  return 0;
+}
+
+int set_random_mode_frequency(String s) {
+  random_mode_frequency = s.toInt();
+  Serial.printlnf("random_mode_frequency is 1 in %d", random_mode_frequency);
+
+  return 0;
 }
 
 void off(uint8_t wait ) {
@@ -157,19 +180,28 @@ void setup() {
   bool success_c  = Particle.function("rgb_value", set_rgb);
   bool success_w  = Particle.function("w_value", set_w);
   bool success_sw = Particle.function("schedule", set_schedule);
+  bool success_rm = Particle.function("random_mode", set_random_mode);
+
   bool success_m  = Particle.function("mode", set_mode);
-  bool success_pm  = Particle.function("party", set_party);
+  // bool success_pm  = Particle.function("party", set_party);
 
   bool success_b  = Particle.function("brightness", set_brightness);
   bool success_ps = Particle.function("party_speed", set_party_speed);
   bool success_cs = Particle.function("color_speed", set_colorcycle_speed);
 
+  bool success_rs = Particle.function("random_mode_wait_seconds", set_random_mode_wait_seconds);
+  bool success_mf = Particle.function("random_mode_frequency", set_random_mode_frequency);
+
   // Allow reading from the photon the existing settings
   Particle.variable("schedule", schedule);
+  Particle.variable("random_mode", random_mode);
   Particle.variable("mode", mode);
   Particle.variable("brightness", brightness);
   Particle.variable("party_speed", party_speed);
   Particle.variable("color_speed", colorcycle_speed);
+  Particle.variable("random_mode_wait_seconds", random_mode_wait_seconds);
+  Particle.variable("random_mode_frequency", random_mode_frequency);
+
   Particle.variable("w_value", w_value);
   Particle.variable("rgbw_value", rgbw_value); // be sure to call calc_rgbw first
 
@@ -187,8 +219,8 @@ void loop() {
 
   // Lights off as scheduled between 4am and 5pm
   if (schedule == "on") {
-    // Serial.printlnf("schedule is %s. Time is %d", schedule.c_str(), Time.hour() );
     if( Time.hour() > time_off && Time.hour() < time_on  ) {
+      Serial.printlnf("schedule is %s. Time is %d", schedule.c_str(), Time.hour() );
       off(1000);
     }
   }
@@ -198,26 +230,34 @@ void loop() {
       off(1000);
   }
 
-  if (mode == "random") {
-    super_mode = "random";
-    set_random_mode("natural");
-  }
-
-  if (super_mode == "random") {
+  if (random_mode == "on") {
     // 1000=1s, 3000=3s, 10000=10s, 60000=60s/1m, 600000=600s/10m
-    int current_millis = millis()/(60000.0); // PROD
-    // int current_millis = millis()/(3000.0); // DEV
+    long current_millis = millis()/(random_mode_wait_seconds * 1000.0);
+
+    // Serial.printlnf("random_mode %s. random_mode_wait_seconds %d. current_millis %d. super_mode_last_change_millis %d", 
+    //                 random_mode.c_str(), random_mode_wait_seconds, current_millis, super_mode_last_change_millis );
 
     if (current_millis > super_mode_last_change_millis ) {
+
+      // Serial.printlnf("random_mode %s. random_mode_wait_seconds %d. current_millis %d. super_mode_last_change_millis %d", 
+      //           random_mode.c_str(), random_mode_wait_seconds, current_millis, super_mode_last_change_millis );
+
       super_mode_last_change_millis = current_millis;
 
-      set_random_mode("natural");
-
-      // 1 in 60 chance of going into colorcycle
-      if ( ! (rand() % 60) ) set_random_mode("colorcycle"); //mode = "colorcycle";
+      // 1 in X chance of going into colorcycle
+      // random_mode_frequency, 2 (50%), 4 (25%), 6 (16%), 60 (1.6%)
+      if ( ! (rand() % random_mode_frequency) ) {
+        set_mode("colorcycle"); //mode = "colorcycle";
+      }
 
       // 1 in 100 chance of going into party
-      if ( ! (rand() % 600) ) set_random_mode("party");
+      else if ( ! (rand() % (random_mode_frequency*10)) ) { 
+        set_mode("party");
+      }
+
+      else {
+        set_mode("natural");
+      }
     }
     
   }
@@ -261,11 +301,12 @@ void loop() {
   // startTimer = 123456
   // if millis
   // at end of party mode we go back to natural after timeOutSecond
-  unsigned long now = millis();
-  if ( timer>0 && now > timer + timeOutSeconds*1000 ) {
-    endTimer();
-    set_mode("natural");
-  }
+
+  // unsigned long now = millis();
+  // if ( timer>0 && now > timer + timeOutSeconds*1000 ) {
+  //   endTimer();
+  //   set_mode("natural");
+  // }
 
 }
 

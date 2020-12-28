@@ -31,3 +31,7 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
 }
+
+fieldset {
+    border: 0;
+}

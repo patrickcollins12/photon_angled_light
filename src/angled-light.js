@@ -18,6 +18,12 @@ function setup() {
   readParticleVariable("schedule",  function(value) {
     document.querySelector("#schedule").checked = (value=="on")?true:false;
   });  
+
+  // when first loading try to get the random value from the photon
+  readParticleVariable("random_mode",  function(value) {
+    document.querySelector("#random_mode").checked = (value=="on")?true:false;
+    randomModeChange(value);
+  });
   
   // setup the color picker in the DOM
   var colorWell = document.querySelector("#colorWell");
@@ -54,6 +60,27 @@ function setup() {
     });
   }
 
+
+  // random mode wait seconds
+  var s = document.querySelectorAll('input[name="random_mode_wait_seconds"]');
+  for (var i = 0, len = s.length; i < len; i++) {
+    s[i].addEventListener("click", function(event) {
+      var rmws = event.target.value;
+      callParticleFunction("random_mode_wait_seconds", rmws);
+      document.querySelector("#random_mode_wait_seconds_val").innerHTML = rmws;
+    });
+  }
+
+    // random mode frequency
+    var s = document.querySelectorAll('input[name="random_mode_frequency"]');
+    for (var i = 0, len = s.length; i < len; i++) {
+      s[i].addEventListener("click", function(event) {
+        var rmws = event.target.value;
+        callParticleFunction("random_mode_frequency", rmws);
+        document.querySelector("#random_mode_frequency_val").innerHTML = rmws;
+      });
+    }
+  
   // csSlider.addEventListener("change", function(event) {
   //   callParticleFunction("color_speed", event.target.value);
 
@@ -65,6 +92,10 @@ function setup() {
     callParticleFunction("schedule", (event.target.checked)?"on":"off");
   }, false);
 
+  // setup random_mode event listener
+  var randomModeCheckbox = document.querySelector("#random_mode");
+  randomModeCheckbox.addEventListener("change", handleRandomModeClick, false);
+  
   // setup the mode radio handler in the DOM
   var radios = document.getElementsByName("mode");
   for (var i = 0; i < radios.length; i++) {
@@ -219,6 +250,23 @@ function handleModeClick(event) {
   displaySubSection(mode);
 }
 
+function randomModeChange(mode) {
+    
+  // enable/disable the other choices
+  var choiceFS = document.querySelector("#choice_fieldset");
+  choiceFS.disabled = (mode === "on") ? true: false;
+
+  // var choices = document.querySelector("#choices");
+  // choices.hidden = (randomMode === "on") ? true: false;
+  displaySubSection("random_mode");
+}
+
+function handleRandomModeClick(event) {
+  var randomMode = (event.target.checked)?"on":"off";
+  callParticleFunction("random_mode", randomMode);
+  randomModeChange(randomMode);
+}
+
 // hide or display the mode section
 // and preload and variables set into the photon
 function displaySubSection(mode) {
@@ -235,6 +283,17 @@ function displaySubSection(mode) {
       });
     }
 
+    if (mode=="random_mode") {
+      readParticleVariable("random_mode_wait_seconds",function(speed) {
+        document.querySelector("#random_mode_wait_seconds_val").innerHTML = speed;
+      });
+
+      readParticleVariable("random_mode_frequency",function(speed) {
+        document.querySelector("#random_mode_frequency_val").innerHTML = speed;
+      });
+
+    }
+
     if (mode=="color") {
       readParticleVariable("rgbw_value",rgbwVariableResultHandler);
     }
@@ -245,7 +304,6 @@ function displaySubSection(mode) {
     for (var i = 0; i < sections.length; i++) {
       var s = sections[i];
       s.style.display = (s.id == mode + "_section" ) ? "inline" : "none";
-
     }
 }
 

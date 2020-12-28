@@ -56,48 +56,67 @@
 
 			<div class="col s12 m6 l8 ">
 				<span id="mode_title">Choose a light mode</span>
-				<form action="#">
-					<p>
-						<label>
-							<input type="radio" name="mode" value="natural" checked />
-							<span>Natural</span>
-						</label>
-					</p>
 
+				<form action="#">
+
+					<div class="switch">
+						<p>
+						<label>
+							Choose
+							<input type="checkbox" id="random_mode">
+							<span class="lever"></span>
+							Random
+						</label></p>
+					</div>
+<!-- 	
 					<p>
 						<label>
 							<input type="radio" name="mode" value="random" checked />
 							<span>Random</span>
 						</label>
-					</p>
+					</p> -->
 
-					<p>
-						<label>
-							<input type="radio" name="mode" value="party" checked />
-							<span>Party Mode!</span>
-						</label>
-					</p>
+					<div id="choices">
+						<fieldset disabled="disabled" id="choice_fieldset">
 
-					<p>
-						<label>
-							<input type="radio" name="mode" value="colorcycle" checked />
-							<span>Cycle through Colors</span>
-						</label>
-					</p>
+							<p>
+								<label>
+									<input type="radio" name="mode" value="natural" checked />
+									<span>Natural</span>
+								</label>
+							</p>
 
-					<p>
-						<label>
-							<input type="radio" name="mode" value="color" checked />
-							<span>Choose a Color</span>
-						</label>
-					</p>
 
-					<p>
-						<label>
-							<input type="radio" name="mode" value="off" checked />
-							<span>Off</span>
-						</label>
-					</p>
+							<p>
+								<label>
+									<input type="radio" name="mode" value="party" checked />
+									<span>Party Mode!</span>
+								</label>
+							</p>
+
+							<p>
+								<label>
+									<input type="radio" name="mode" value="colorcycle" checked />
+									<span>Cycle through Colors</span>
+								</label>
+							</p>
+
+							<p>
+								<label>
+									<input type="radio" name="mode" value="color" checked />
+									<span>Choose a Color</span>
+								</label>
+							</p>
+
+							<p>
+								<label>
+									<input type="radio" name="mode" value="off" checked />
+									<span>Off</span>
+								</label>
+							</p>
+
+						</fieldset>
+					</div>
 
 					<!-- <input type="radio" name="mode" value="natural" checked>Natural<br>
 						<input type="radio" name="mode" value="party">Party (Motion)<br>
@@ -114,6 +133,7 @@
 			</div>
 
 			<div class="col s12 m6 l8 ">
+
 				<div id="natural_section" class="mode_section">
 				</div>
 		
@@ -127,6 +147,67 @@
 
 					<label for="white">White</label><br>
 					<input class="pcrange" type="range" id="white" name="white" min="0" max="255" value="0">
+				</div>
+
+				<div id="random_mode_section" class="mode_section">
+					<form action="#">
+						<label >Time between changes <span id="random_mode_wait_seconds_val"></span>s</label><br>
+						<p>
+							<label>
+								<input type="radio" name="random_mode_wait_seconds" value="1">
+								<span>Very Fast (1s)</span>
+							</label>
+						</p>
+						<p>
+							<label>
+								<input type="radio" name="random_mode_wait_seconds" value="5">
+								<span>Fast (5s)</span>
+							</label>
+						</p>
+						<p>
+							<label>
+								<input type="radio" name="random_mode_wait_seconds" value="60">
+								<span>Slow (1 minute)</span>
+							</label>
+						</p>
+						<p>
+							<label>
+								<input type="radio" name="random_mode_wait_seconds" value="360">
+								<span>Very Slow (6 minutes. Default)</span>
+							</label>
+						</p>
+					</form>
+
+
+					<form action="#">
+						<label >Frequency of colors 1 in <span id="random_mode_frequency_val"></span></label><br>
+						<p>
+							<label>
+								<input type="radio" name="random_mode_frequency" value="2">
+								<span>Very Regularly (1 in 2)</span>
+							</label>
+						</p>
+						<p>
+							<label>
+								<input type="radio" name="random_mode_frequency" value="4">
+								<span>Regularly (1 in 4)</span>
+							</label>
+						</p>
+						<p>
+							<label>
+								<input type="radio" name="random_mode_frequency" value="6">
+								<span>Irregularly (1 in 6)</span>
+							</label>
+						</p>
+						<p>
+							<label>
+								<input type="radio" name="random_mode_frequency" value="20">
+								<span>Very Irregularly (1 in 20. Default)</span>
+							</label>
+						</p>
+					</form>
+
+
 				</div>
 
 				<div id="party_section" class="mode_section">
