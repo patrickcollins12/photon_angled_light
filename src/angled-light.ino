@@ -53,10 +53,10 @@ int time_off=  4; // turn off at 4am (04:00)
 String random_mode = "on"; // on|off
 
 // 1s,3s,10s,360 (6m), 600s(10m)
-int random_mode_wait_seconds = 360;
+int random_mode_wait_seconds = 120;
 
 // 1 in 2 (50%), 1 in 4 (25%), 1 in 6 (16%), 1 in 20 (5%), 1 in 60 (1.6%)
-int random_mode_frequency = 20;
+int random_mode_frequency = 4;
 
 // String mode = "color", "party", "natural", etc;
 String mode = "natural";
@@ -234,13 +234,7 @@ void loop() {
     // 1000=1s, 3000=3s, 10000=10s, 60000=60s/1m, 600000=600s/10m
     long current_millis = millis()/(random_mode_wait_seconds * 1000.0);
 
-    // Serial.printlnf("random_mode %s. random_mode_wait_seconds %d. current_millis %d. super_mode_last_change_millis %d", 
-    //                 random_mode.c_str(), random_mode_wait_seconds, current_millis, super_mode_last_change_millis );
-
     if (current_millis > super_mode_last_change_millis ) {
-
-      // Serial.printlnf("random_mode %s. random_mode_wait_seconds %d. current_millis %d. super_mode_last_change_millis %d", 
-      //           random_mode.c_str(), random_mode_wait_seconds, current_millis, super_mode_last_change_millis );
 
       super_mode_last_change_millis = current_millis;
 
@@ -250,7 +244,7 @@ void loop() {
         set_mode("colorcycle"); //mode = "colorcycle";
       }
 
-      // 1 in 100 chance of going into party
+      // 10 times less likely of going into party
       else if ( ! (rand() % (random_mode_frequency*10)) ) { 
         set_mode("party");
       }
