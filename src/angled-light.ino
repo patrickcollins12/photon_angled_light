@@ -106,8 +106,7 @@ int set_schedule(String p) {
 
 int set_mode(String p) {
   mode = p;
-  Serial.printlnf("mode %s", mode.c_str() );
-  // super_mode = "off";
+  Serial.printlnf("mode set: %s", mode.c_str() );
   return 0;
 }
 
@@ -157,7 +156,7 @@ int set_random_mode_frequency(String s) {
   return 0;
 }
 
-void off(uint8_t wait ) {
+void off(unsigned long wait ) {
   strip.setBrightness(0);
   strip.show();
   delay(wait);
@@ -219,15 +218,23 @@ void loop() {
 
   // Lights off as scheduled between 4am and 5pm
   if (schedule == "on") {
+    // if on schedule and between 5pm and 4am, then turn on, else turn off
     if( Time.hour() > time_off && Time.hour() < time_on  ) {
       Serial.printlnf("schedule is %s. Time is %d", schedule.c_str(), Time.hour() );
+      
+      // sleep a second then abort the whole loop
       off(1000);
+      return; 
     }
+
   }
 
-  // fold this into the schedule?
+  // if off then sleep, return...
   if (mode == "off") {
+      Serial.printlnf("mode is off. sleep 1s %ld.", millis() );
+
       off(1000);
+      return; 
   }
 
   if (random_mode == "on") {
@@ -420,7 +427,7 @@ void colorAll(uint32_t c, uint8_t wait) {
 // }
 
 // Fill the dots one after the other with a color, wait (ms) after each one
-void colorWipe(uint32_t c, uint8_t wait) {
+void colorWipe(uint32_t c, unsigned long wait) {
   for(uint16_t i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
     strip.setBrightness(brightness);
@@ -498,10 +505,10 @@ int rainbow_portions = 7;
 float rainbow_range = 256/rainbow_portions;
 unsigned long old_millis = 0;
 uint16_t j = 0;
-void rainbow(int wait ) {
+void rainbow(unsigned long wait ) {
 
   // manage the delay
-  if (millis() - old_millis >= (unsigned long)wait ) {
+  if (millis() - old_millis >= wait ) {
 
     // if we've waited long enough, change our lights.
     // We want to go from j to j+rainbow_range
