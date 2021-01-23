@@ -280,16 +280,21 @@ function displaySubSection(mode) {
     if (mode=="colorcycle") {
       readParticleVariable("color_speed",function(speed) {
         document.querySelector("#color_speed_val").innerHTML = speed;
+        document.querySelector(`#color_speed_radiobuttonset [value="${speed}"]`).checked = true;	
+
       });
     }
 
     if (mode=="random_mode") {
       readParticleVariable("random_mode_wait_seconds",function(speed) {
         document.querySelector("#random_mode_wait_seconds_val").innerHTML = speed;
+        document.querySelector(`#random_mode_wait_radiobuttonset [value="${speed}"]`).checked = true;	
+
       });
 
       readParticleVariable("random_mode_frequency",function(speed) {
         document.querySelector("#random_mode_frequency_val").innerHTML = speed;
+        document.querySelector(`#random_mode_frequency_radiobuttonset [value="${speed}"]`).checked = true;	
       });
 
     }
