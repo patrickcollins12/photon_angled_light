@@ -17,7 +17,7 @@ function setup() {
   // when first loading try to get the schedule value from the photon
   readParticleVariable("schedule",  function(value) {
     document.querySelector("#schedule").checked = (value=="on")?true:false;
-  });  
+  });
 
   // when first loading try to get the random value from the photon
   readParticleVariable("random_mode",  function(value) {
@@ -110,6 +110,7 @@ export default setup
 // We're getting a variable (GETting) and inspecting the response
 //  for the result param and posting to the resultFunction
 function readParticleVariable(functionName, resultFunction) {
+  turnOnSpinner();
   axios(
     { url:    `${requestURL}/${functionName}`,
       params: { access_token: accessToken },
@@ -119,14 +120,25 @@ function readParticleVariable(functionName, resultFunction) {
   .then(function (response) {
     var result = response.data.result;
     console.log(`get ${functionName}:${result} (succeeded)` );
+  
     resultFunction(result);
   })
+  .catch(function (error) {
+    console.log("Error:", error);
+  })
+  .then(function () {
+    // always executed
+    turnOffSpinner();
+  });  
 
 }
+
 
 // We're setting a variable (POSTING a function) 
 // and ignoring the response
 function callParticleFunction(functionName, arg) {
+  turnOnSpinner();
+
   axios(
     { url:    `${requestURL}/${functionName}`,
       params: { access_token: accessToken },
@@ -137,26 +149,57 @@ function callParticleFunction(functionName, arg) {
   .then(function (response) {
     console.log(`set ${functionName}:${arg} (succeeded)`);
   })
-
+  .catch(function (error) {
+    console.log("Error:", error);
+  })
+  .then(function () {
+    // always executed
+    turnOffSpinner();
+  });  
 }
 
-function callParticleAxios(functionName, argName, resultFunction) {
-  // We're setting a variable (POSTING a function) 
-  // and ignoring the response
-    axios(
-      {
-        url:    `${requestURL}/${functionName}`,
-        method: 'POST',
-        data:   { arg: argName },
-        params: { access_token: accessToken }
-      })
-    .then(function (response) {
-      console.log(`set ${argName} (succeeded)`);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+
+var spinCount=0;
+function turnOnSpinner() {
+  document.querySelector("#mycheck").style.display = "none";
+  document.querySelector("#myloading").style.display = "block";
+  spinCount++;
+  console.log(spinCount);
 }
+
+function turnOffSpinner() {
+  spinCount--;
+  if (spinCount <=0) {
+    spinCount=0;
+
+    // turn on the check, the 500ms turn it off again
+    document.querySelector("#mycheck").style.display = "inline";
+    setTimeout(function(){ 
+        document.querySelector("#mycheck").style.display = "none";
+    }, 800);
+
+    document.querySelector("#myloading").style.display = "none";
+  }
+  console.log(spinCount);
+}
+
+// function callParticleAxios(functionName, argName, resultFunction) {
+//   // We're setting a variable (POSTING a function) 
+//   // and ignoring the response
+//     axios(
+//       {
+//         url:    `${requestURL}/${functionName}`,
+//         method: 'POST',
+//         data:   { arg: argName },
+//         params: { access_token: accessToken }
+//       })
+//     .then(function (response) {
+//       console.log(`set ${argName} (succeeded)`);
+//     })
+//     .catch(function (error) {
+//       console.log(error);
+//     });
+// }
 
 function callParticleFETCH(functionName, argName, resultFunction) {
 
@@ -240,7 +283,6 @@ function modeVariableResultHandler(mode) {
     var r = radios[i];
     r.checked = (r.value == mode)?true:false;
   }
-
   displaySubSection(mode);
 }
 
@@ -256,9 +298,9 @@ function randomModeChange(mode) {
   var choiceFS = document.querySelector("#choice_fieldset");
   choiceFS.disabled = (mode === "on") ? true: false;
 
-  // var choices = document.querySelector("#choices");
-  // choices.hidden = (randomMode === "on") ? true: false;
-  displaySubSection("random_mode");
+  if (mode === "on") {
+    displaySubSection("random_mode");
+  }
 }
 
 function handleRandomModeClick(event) {
@@ -270,6 +312,7 @@ function handleRandomModeClick(event) {
 // hide or display the mode section
 // and preload and variables set into the photon
 function displaySubSection(mode) {
+
 
     if (mode=="party") {
       readParticleVariable("party_speed",function(speed) {
@@ -305,6 +348,8 @@ function displaySubSection(mode) {
 
     // hide all the mode sections and show the 
     // right one for the mode
+
+    console.log("yep:" + mode)
     const sections = document.querySelectorAll(".mode_section");
     for (var i = 0; i < sections.length; i++) {
       var s = sections[i];
