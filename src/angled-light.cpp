@@ -1,7 +1,34 @@
+/******************************************************/
+//       THIS IS A GENERATED FILE - DO NOT EDIT       //
+/******************************************************/
+
+#line 1 "/Users/patrick/software_projects/photon_angled_light/src/angled-light.ino"
 #include "Particle.h"
 #include "neopixel.h"
 #include "ColorC.h"
 
+
+int set_rgb(String rgb);
+int set_w(String w);
+int set_schedule(String p);
+int set_mode(String p);
+int set_random_mode(String p);
+int set_brightness(String b);
+int set_party_speed(String s);
+int set_colorcycle_speed(String s);
+int set_random_mode_wait_seconds(String s);
+int set_random_mode_frequency(String s);
+void off(unsigned long wait );
+void setup();
+void loop();
+void calc_rgbw();
+void whiteOverRainbow(uint8_t wait, uint8_t whiteSpeed, uint8_t whiteLength );
+void colorWipe(uint32_t c, unsigned long wait);
+void mixin(uint32_t c, float mix);
+String printColor(uint32_t c);
+void rainbow(unsigned long wait );
+uint32_t WheelRGBW(byte WheelPos);
+#line 6 "/Users/patrick/software_projects/photon_angled_light/src/angled-light.ino"
 Rgb rgb1 = { 100,120,150};
 Rgb rgb2 = { 50,120,150};
 Rgb rgb3 = color_add_rgb(rgb1,rgb2,0.5);

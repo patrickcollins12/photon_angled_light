@@ -22,6 +22,27 @@
 
 		<!-- <div class="card-panel teal lighten-2">This is a card panel with a teal lighten-2 class</div> -->
 
+		<div class="myspinner">
+			<div class="preloader-wrapper small active">
+				<div class="spinner-layer" id="myloading">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="gap-patch">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+			</div>
+			<div id="mycheck">
+				<i class="small material-icons bigcheck">check_circle</i>
+			</div>
+			
+		</div>
+
+
 		<div class="row">
 
 			<div class="col s12 m6 l4  ">
@@ -150,7 +171,7 @@
 				</div>
 
 				<div id="random_mode_section" class="mode_section">
-					<form action="#">
+					<form action="#" id="random_mode_wait_radiobuttonset">
 						<label >Time between changes <span id="random_mode_wait_seconds_val"></span>s</label><br>
 						<p>
 							<label>
@@ -185,8 +206,8 @@
 						</p>
 					</form>
 
-
-					<form action="#">
+					
+					<form action="#" id="random_mode_frequency_radiobuttonset">
 						<label >Frequency of colors 1 in <span id="random_mode_frequency_val"></span></label><br>
 						<p>
 							<label>
@@ -227,7 +248,7 @@
 					Fast (1ms) <input class="pcrange" type="range" id="color_speed" name="color_speed" min="1" max="1000" value="0"> Slow (1000ms)
 				</div> -->
 				<div id="colorcycle_section" class="mode_section">
-					<form action="#">
+					<form action="#" id="color_speed_radiobuttonset">
 						<label >Color Cycle Speed <span id="color_speed_val"></span>ms</label><br>
 						<p>
 							<label>

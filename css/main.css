@@ -35,3 +35,26 @@ html, body {
 fieldset {
     border: 0;
 }
+
+.myspinner {
+    /* width:30%; */
+    /* display: flex; */
+    /* justify-content: center; */
+    /* display: none; */
+    position:fixed;
+    /* top:0%; */
+    bottom:30px;
+    right:30px;
+    padding: 20px;
+}
+
+
+#myloading {
+    display: none;
+}
+
+#mycheck {
+    /* teal */
+    color: #00796bb4;
+    display: none;
+}
