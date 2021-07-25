@@ -11,7 +11,6 @@ This source repository contains:
 - color speed radio boxes don't select/update current value
 - BUG: debug working on iphone
 - add domain to netlify?
-- make some auth to distribute to others
 - loading status spinner and getting/setting spinner or debug readout
 - Publish mode changes to UI? Would this need React? Meh couldn't be bothered.
 - Make a base html home and serve from there. Already moved stuff to dist. https://stackoverflow.com/questions/27639005/how-to-copy-static-files-to-build-directory-with-webpack You don't need to copy things around, webpack works different than gulp. Webpack is a module bundler and everything you reference in your files will be included. You just need to specify a loader for that.
@@ -20,6 +19,7 @@ This source repository contains:
 - random mode
 - get serial particle console logging going
 - Alexa
+- make some auth to distribute to others WON'T DO
 - Move to materialize
 - figure out how to build on netlify
 - test out defaults and disabled or slow wifi

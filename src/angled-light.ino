@@ -2,7 +2,6 @@
 #include "neopixel.h"
 #include "ColorC.h"
 
-
 Rgb rgb1 = { 100,120,150};
 Rgb rgb2 = { 50,120,150};
 Rgb rgb3 = color_add_rgb(rgb1,rgb2,0.5);

@@ -27,7 +27,7 @@
     "dev": "webpack --mode development --watch",
     "build": "webpack --mode production",
     "flash": "particle flash 290031001047363336383437",
-    "start": "node ./server.js"
+    "serve": "node ./server.js"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,6 @@
 
 const deviceID = "290031001047363336383437";
-const accessToken = "d0f8272c95f5096fb36bad41d86ff13fd221bb79";
+const accessToken = "8331d33ec6f36b9c8900c929c71617335c86c149";
 var requestURL = `https://api.spark.io/v1/devices/${deviceID}`;
 import axios from 'axios';
 
