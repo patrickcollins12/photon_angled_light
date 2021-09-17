@@ -4,6 +4,7 @@ const accessToken = "8331d33ec6f36b9c8900c929c71617335c86c149";
 var requestURL = `https://api.spark.io/v1/devices/${deviceID}`;
 import axios from 'axios';
 
+// no change
 function setup() {
 
   // when first loading try to get the mode from the photon
