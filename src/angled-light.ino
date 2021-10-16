@@ -221,7 +221,7 @@ void loop() {
     // if on schedule and between 5pm and 4am, then turn on, else turn off
     // imagine hour is 0....
     // if( Time.hour() > time_off && Time.hour() < time_on  ) {
-      int t =12;
+      int t =Time.hour();
     if( t > time_off && t < time_on  ) {
       Serial.printlnf("[%d] schedule is %s. Time is %d", ctr++, schedule.c_str(), t );
       
@@ -297,9 +297,9 @@ void loop() {
      colorAll(strip.Color(106,255,0,60), 1); 
   }
 
-  if (show) {
-    strip.show();
-  }
+  // if (show) {
+  //   strip.show();
+  // }
 
   // 1000*timeOutSeconds = 3000
   // startTimer = 123456
@@ -522,8 +522,8 @@ void rainbow(unsigned long wait ) {
       strip.setPixelColor(i, Wheel(wheel & 255));
     }
     
-    show=1;
-    // strip.show();
+    // show=1;
+    strip.show();
 
     // reset the timer to 300ms
     // then increment the color after each sleep delay
