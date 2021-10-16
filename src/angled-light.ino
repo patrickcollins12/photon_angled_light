@@ -203,13 +203,14 @@ void setup() {
   Particle.variable("w_value", w_value);
   Particle.variable("rgbw_value", rgbw_value); // be sure to call calc_rgbw first
 
-  // set the timezone, not it is not DST sensitive.
+  // set the timezone, note it is not DST sensitive.
   Time.zone(11);
 
 }
 
 // MAIN LOOP
 int show;
+int ctr=0;
 void loop() {
   // Serial.printlnf("millis %lu, mode %s", millis(), mode.c_str());
 
@@ -220,9 +221,9 @@ void loop() {
     // if on schedule and between 5pm and 4am, then turn on, else turn off
     // imagine hour is 0....
     // if( Time.hour() > time_off && Time.hour() < time_on  ) {
-      int t =13;
+      int t =12;
     if( t > time_off && t < time_on  ) {
-      Serial.printlnf("schedule is 2 %s. Time is %d", schedule.c_str(), t );
+      Serial.printlnf("[%d] schedule is %s. Time is %d", ctr++, schedule.c_str(), t );
       
       // sleep a second then abort the whole loop
       off(1000);
