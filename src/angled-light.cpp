@@ -7,7 +7,6 @@
 #include "neopixel.h"
 #include "ColorC.h"
 
-
 int set_rgb(String rgb);
 int set_w(String w);
 int set_schedule(String p);
@@ -28,7 +27,7 @@ void mixin(uint32_t c, float mix);
 String printColor(uint32_t c);
 void rainbow(unsigned long wait );
 uint32_t WheelRGBW(byte WheelPos);
-#line 6 "/Users/patrick/software_projects/photon_angled_light/src/angled-light.ino"
+#line 5 "/Users/patrick/software_projects/photon_angled_light/src/angled-light.ino"
 Rgb rgb1 = { 100,120,150};
 Rgb rgb2 = { 50,120,150};
 Rgb rgb3 = color_add_rgb(rgb1,rgb2,0.5);
@@ -38,7 +37,7 @@ Rgb rgb3 = color_add_rgb(rgb1,rgb2,0.5);
 void colorAll(uint32_t c, uint8_t wait);
 void colorWipe(uint32_t c, uint8_t wait);
 // void rainbow(uint8_t wait);
-void rainbow(int wait);
+// void rainbow(int wait);
 void rainbowCycle(uint8_t wait);
 uint32_t Wheel(byte WheelPos);
 

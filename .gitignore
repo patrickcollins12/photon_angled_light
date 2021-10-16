@@ -1,4 +1,6 @@
 photon_firmware*.bin
+lib/
+target/
 
 # C++
 build/

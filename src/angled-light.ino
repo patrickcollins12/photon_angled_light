@@ -11,7 +11,7 @@ Rgb rgb3 = color_add_rgb(rgb1,rgb2,0.5);
 void colorAll(uint32_t c, uint8_t wait);
 void colorWipe(uint32_t c, uint8_t wait);
 // void rainbow(uint8_t wait);
-void rainbow(int wait);
+// void rainbow(int wait);
 void rainbowCycle(uint8_t wait);
 uint32_t Wheel(byte WheelPos);
 
